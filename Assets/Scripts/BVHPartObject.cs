@@ -112,6 +112,7 @@ namespace BVH {
                 lr.endWidth = 0.5f;
                 lr.SetPosition(0, obj.gameObject.transform.position);
                 lr.SetPosition(1, parentObject.gameObject.transform.position);
+                // Ellipsoids.CreateEllipsoid(obj.gameObject, parentObject.gameObject);
             }
             return obj;
         }
@@ -127,14 +128,8 @@ namespace BVH {
                 lr.SetPosition(0, gameObject.transform.position);
                 lr.SetPosition(1, Parent.gameObject.transform.position);
 
-                //Ellipsoids.drawEllipsoids(Parent.gameObject.transform.position, gameObject.transform.position, lr);
-                //Ellipsoids_Sphere.setEllipsoid(Parent.gameObject.transform.position, gameObject.transform.position);
-            }
-        }
-        public void UpdateMutiLines(){
-            UpdateSingleLine();
-            foreach(var c in Child){
-                c.UpdateSingleLine();
+                // Ellipsoids.drawEllipsoids(Parent.gameObject.transform.position, gameObject.transform.position, lr);
+                // Ellipsoids_Sphere.setEllipsoid(Parent.gameObject.transform.position, gameObject.transform.position);
             }
         }
 

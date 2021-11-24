@@ -190,7 +190,6 @@ namespace BVH
             {
                 tmpWarping.Add(new Tuple<int, int>(i, j));
                 var tmp_timewarp = twTable[i, j];
-                Debug.Log(twTable[i, j].Distance);
                 i = tmp_timewarp.PreviousI;
                 j = tmp_timewarp.PreviousJ;
             }
@@ -213,7 +212,7 @@ namespace BVH
                     Warping[i] = -1;
                 }
             }
-            for (i = 0; i < basicObj.Motion.FrameCount; i++) Debug.Log(i + ": " + Warping[i]);
+            // for (i = 0; i < basicObj.Motion.FrameCount; i++) Debug.Log(i + ": " + Warping[i]);
         }
         private void refToBasic() {
             refObj.Motion.MotionData.Clear();
