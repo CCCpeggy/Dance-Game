@@ -44,10 +44,20 @@ namespace Pose {
             Utility.IterData.CheckAndNext(ref bvhDataIter, "Time:");
             motion.FrameTime = float.Parse(Utility.IterData.GetAndNext(ref bvhDataIter));
             motion.MotionData = new List<Frame>();
-            for (int i = 0; i < motion.FrameCount; i++) {
-                Frame frame = (isTPoseType && i != 0) ? motion.TPose.Clone() : new Frame(obj.Part.Length);
-                for (int j = 0; j < obj.Part.Length; j++) {
-                    frame.Rotation[j] = Quaternion.Euler(0, 0, 0);
+            for (int i = 0; i < motion.FrameCount; i++)
+            {
+                Frame frame;
+                if (isTPoseType && i != 0)
+                {
+                    frame = motion.MotionData[0].Clone();
+                }
+                else
+                {
+                    frame = new Frame(obj.Part.Length);
+                    for (int j = 0; j < obj.Part.Length; j++)
+                    {
+                        frame.Rotation[j] = Quaternion.Euler(0, 0, 0);
+                    }
                 }
                 for (int j = 0; j < obj.ChannelDatas.Count; j++) {
                     float num = float.Parse(Utility.IterData.GetAndNext(ref bvhDataIter));
@@ -63,11 +73,12 @@ namespace Pose {
                         else if (infoIdx == 2) frame.Rotation[partIdx] *= Quaternion.Euler(0, 0, num);
                     }
                 }
-                if(isTPoseType && i == 0) motion.TPose = frame;
-                else motion.MotionData.Add(frame);
+                motion.MotionData.Add(frame);
             }
             if (isTPoseType) {
                 motion.FrameCount--;
+                motion.TPose = motion.MotionData[0];
+                motion.MotionData.Remove(motion.MotionData[0]);
             }
             return motion;
         }
@@ -77,7 +88,8 @@ namespace Pose {
             int nextFrameIdx = (previousFrameIdx + 1) % FrameCount;
             float alpha = frameIdx - previousFrameIdx;
             var Part = PoseObj.Part;
-            for(int i = 0; i < Part.Length; i++){
+            for (int i = 0; i < Part.Length; i++)
+            {
                 Quaternion previousRotValue = MotionData[previousFrameIdx].Rotation[i];
                 Quaternion nextRotValue = MotionData[nextFrameIdx].Rotation[i];
                 Quaternion thisRotValue = Utility.GetQuaternionAvg(previousRotValue, nextRotValue, alpha);
