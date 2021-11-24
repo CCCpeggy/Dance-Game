@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BVH {
+namespace Pose {
 
     class Utility
     {

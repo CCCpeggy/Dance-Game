@@ -5,50 +5,50 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-namespace BVH {
-    public class BVHObject: MonoBehaviour{
-        public BVHPartObject Root;
-        public BVHMotion Motion;
-        public List<Tuple<BVHPartObject, int>> ChannelDatas = new List<Tuple<BVHPartObject, int>>();
-        public BVHPartObject[] Part;
-        public static GameObject CreateBVHObjectByPath(string filename, bool isTPoseType=false) {
+namespace Pose {
+    public class Object: MonoBehaviour{
+        public PartObject Root;
+        public Motion Motion;
+        public List<Tuple<PartObject, int>> ChannelDatas = new List<Tuple<PartObject, int>>();
+        public PartObject[] Part;
+        public static GameObject CreatePoseObjByBVH(string filename, bool isTPoseType=false) {
             GameObject gameObject = new GameObject();
             var filenameArr = filename.Split('\\');
             gameObject.name = filenameArr[filenameArr.Length - 1].Split('.')[0];
-            var bvhObject = gameObject.AddComponent<BVHObject>();
+            var poseObject = gameObject.AddComponent<Object>();
             string bvhStrData = System.IO.File.ReadAllText(filename);
-            bvhObject.Read(bvhStrData, isTPoseType);
+            poseObject.Read(bvhStrData, isTPoseType);
             return gameObject;
         }
-        public BVHObject Clone(bool isMotion=true){
+        public Object Clone(bool isMotion=true){
             GameObject newObj = new GameObject();
-            var newBVH = newObj.AddComponent<BVHObject>();
-            newBVH.Root = Root.Clone(newBVH);
-            newBVH.Root.transform.parent = newObj.transform;
-            newBVH.RenamePartCMU();
+            var newPose = newObj.AddComponent<Object>();
+            newPose.Root = Root.Clone(newPose);
+            newPose.Root.transform.parent = newObj.transform;
+            newPose.RenamePartCMU();
             if (isMotion) {
-                newBVH.Motion = Motion.Clone(newBVH);
+                newPose.Motion = Motion.Clone(newPose);
             }
             // foreach(var data in ChannelDatas) {
             //     var part = newBVH.Part[Utility.GetPartIdxByName(data.Item1.name)];
             //     newBVH.ChannelDatas.Add(new Tuple<BVHPartObject, int>(part, data.Item2));
             // }
-            return newBVH;
+            return newPose;
         }
 
-        public void Read(string bvhStrData, bool isTPoseType=false) {
-            var bvhDataIter = BVH.Utility.SplitString(bvhStrData).GetEnumerator();
+        public void Read(string poseStrData, bool isTPoseType=false) {
+            var poseDataIter = Pose.Utility.SplitString(poseStrData).GetEnumerator();
             
-            bvhDataIter.MoveNext();
-            Utility.IterData.CheckAndNext(ref bvhDataIter, "HIERARCHY");
-            Utility.IterData.CompareAndNext(ref bvhDataIter, "ROOT");
-            Root = BVHPartObject.ReadPart(ref bvhDataIter, this);
+            poseDataIter.MoveNext();
+            Utility.IterData.CheckAndNext(ref poseDataIter, "HIERARCHY");
+            Utility.IterData.CompareAndNext(ref poseDataIter, "ROOT");
+            Root = PartObject.ReadPart(ref poseDataIter, this);
             Root.transform.parent = transform;
             RenamePartCMU();
-            Utility.IterData.CompareAndNext(ref bvhDataIter, "MOTION");
-            Motion = BVHMotion.readMotion(ref bvhDataIter, this, isTPoseType);
+            Utility.IterData.CompareAndNext(ref poseDataIter, "MOTION");
+            Motion = Motion.readMotion(ref poseDataIter, this, isTPoseType);
         }
-        public void UpdateLines(BVHPartObject partObject=null){
+        public void UpdateLines(PartObject partObject=null){
             if (partObject == null) partObject = Root;
             foreach(var childObj in partObject.Child){
                 UpdateLines(childObj);
@@ -67,7 +67,7 @@ namespace BVH {
         }
 
         public void RenamePart() {
-            Part = new BVHPartObject[] {
+            Part = new PartObject[] {
                 null, null, null, null, null, null, null, null, null, 
                 null, null, null, null, null, null, null, null, null
             };
@@ -164,14 +164,14 @@ namespace BVH {
         }
         
          public void RenamePartCMU() {
-            Part = new BVHPartObject[31];
-            List<BVHPartObject> bfs = new List<BVHPartObject>();
+            Part = new PartObject[31];
+            List<PartObject> bfs = new List<PartObject>();
             bfs.Add(Root);
             int queueIdx = 0;
             while (queueIdx < bfs.Count) {
                 var cur = bfs[queueIdx++];
                 if (cur.name == "End") continue;
-                int idx = BVH.Utility.CMUMotion.GetPartIdxByNameCMU(cur.name);
+                int idx = Pose.Utility.CMUMotion.GetPartIdxByNameCMU(cur.name);
                 if (idx >= 0) {
                     Part[idx] = cur;
                     cur.PartIdx = idx;

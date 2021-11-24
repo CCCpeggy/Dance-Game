@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace BVH
+namespace Pose
 {
     class TimeWarping
     {
@@ -23,12 +23,12 @@ namespace BVH
             public float Z0 = 0;
         }
         Data[,] twTable;
-        BVH.BVHObject basicObj; // 時間以這個為基礎
-        BVH.BVHObject refObj; // 對應的
-        BVH.BVHObject tmpBasicObj, tmpRefObj;
+        Pose.Object basicObj; // 時間以這個為基礎
+        Pose.Object refObj; // 對應的
+        Pose.Object tmpBasicObj, tmpRefObj;
         public float[] Warping;
         // public List<float[]> Alinement;
-        public TimeWarping(BVH.BVHObject basicObj, BVH.BVHObject refObj)
+        public TimeWarping(Pose.Object basicObj, Pose.Object refObj)
         {
             Assert.IsNotNull(basicObj);
             Assert.IsNotNull(refObj);
@@ -138,7 +138,7 @@ namespace BVH
             }
             return new Tuple<int, int>(maxLenI, maxLenJ);
         }
-        public static Data Distance(BVH.BVHObject o1, BVH.BVHObject o2, int o1Idx, int o2Idx)
+        public static Data Distance(Pose.Object o1, Pose.Object o2, int o1Idx, int o2Idx)
         {
             int partLen = o1.Part.Length;
             float tan11 = 0, tan12 = 0, tan21 = 0, tan22 = 0;

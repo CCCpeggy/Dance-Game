@@ -3,24 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BVH {
-    public class BVHPartObject: MonoBehaviour{
+namespace Pose {
+    public class PartObject: MonoBehaviour{
         public int PartIdx = -1;
         public Vector3 Offset = new Vector3();
-        public BVHObject BvhObj = null;
-        public List<BVHPartObject> Child = new List<BVHPartObject>();
-        public BVHPartObject Parent = null;
-        public BVHPartObject Clone(BVHObject belongBVH, BVHPartObject parentObject=null){
-            BVHPartObject newPart = BVHPartObject.CreateGameObject(name, parentObject, belongBVH);
+        public Object PoseObj = null;
+        public List<PartObject> Child = new List<PartObject>();
+        public PartObject Parent = null;
+        public PartObject Clone(Object belongObj, PartObject parentObject=null){
+            PartObject newPart = PartObject.CreateGameObject(name, parentObject, belongObj);
             newPart.PartIdx = PartIdx;
             newPart.Offset = Offset;
             foreach(var child in Child) {
-                child.Clone(belongBVH, newPart);
+                child.Clone(belongObj, newPart);
             }
             return newPart;
         }
-// D:\workplace\3D遊戲\P2\motion cmu data\01-02\01_02b.bvh
-        public static BVHPartObject ReadPart(ref IEnumerator<string> bvhDataIter, BVHObject obj, BVHPartObject parentObject=null) {
+
+        public static PartObject ReadPart(ref IEnumerator<string> bvhDataIter, Object obj, PartObject parentObject=null) {
             List<string> partNameList = new List<string>();
             while (true){
                 string tmpPartName = Utility.IterData.GetAndNext(ref bvhDataIter);
@@ -28,7 +28,7 @@ namespace BVH {
                 partNameList.Add(tmpPartName);
             }
             string partName = string.Join("_", partNameList);
-            BVHPartObject partObject = BVHPartObject.CreateGameObject(partName, parentObject, obj);
+            PartObject partObject = PartObject.CreateGameObject(partName, parentObject, obj);
             while (true){
                 string input = Utility.IterData.GetAndNext(ref bvhDataIter);
                 switch(input) {
@@ -65,7 +65,7 @@ namespace BVH {
                                     Debug.LogError("非預期輸入");
                                     break;
                             }
-                            var channelData = new Tuple<BVHPartObject, int>(partObject, idx);
+                            var channelData = new Tuple<PartObject, int>(partObject, idx);
                             obj.ChannelDatas.Add(channelData);
                         }
                         break;
@@ -76,7 +76,7 @@ namespace BVH {
                         Utility.IterData.CheckAndNext(ref bvhDataIter, "Site");
                         Utility.IterData.CheckAndNext(ref bvhDataIter, "{");
                         Utility.IterData.CheckAndNext(ref bvhDataIter, "OFFSET");
-                        var endObj = BVHPartObject.CreateGameObject("End", partObject, obj);
+                        var endObj = PartObject.CreateGameObject("End", partObject, obj);
                         endObj.Offset = Utility.IterData.GetVec3AndNext(ref bvhDataIter);
                         Utility.IterData.CheckAndNext(ref bvhDataIter, "}");
                         break;
@@ -100,11 +100,11 @@ namespace BVH {
         }
 
 
-        public static BVHPartObject CreateGameObject(string name, BVHPartObject parentObject, BVHObject bvhObj){
+        public static PartObject CreateGameObject(string name, PartObject parentObject, Object poseObj){
             GameObject gobj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             gobj.name = name;
-            var obj = gobj.AddComponent<BVHPartObject>();
-            obj.BvhObj = bvhObj;
+            var obj = gobj.AddComponent<PartObject>();
+            obj.PoseObj = poseObj;
             if (parentObject){
                 parentObject.AddChild(obj);
                 LineRenderer lr = gobj.AddComponent<LineRenderer>();
@@ -116,7 +116,7 @@ namespace BVH {
             }
             return obj;
         }
-        public void AddChild(BVHPartObject childObj){
+        public void AddChild(PartObject childObj){
             Child.Add(childObj);
             childObj.Parent = this;
             childObj.transform.parent = transform;
