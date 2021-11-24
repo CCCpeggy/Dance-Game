@@ -23,11 +23,11 @@ namespace BVH {
         public BVHObject Clone(bool isMotion=true){
             GameObject newObj = new GameObject();
             var newBVH = newObj.AddComponent<BVHObject>();
-            newBVH.Root = Root.Clone();
+            newBVH.Root = Root.Clone(newBVH);
             newBVH.Root.transform.parent = newObj.transform;
             newBVH.RenamePartCMU();
             if (isMotion) {
-                newBVH.Motion = Motion.Clone();
+                newBVH.Motion = Motion.Clone(newBVH);
             }
             // foreach(var data in ChannelDatas) {
             //     var part = newBVH.Part[Utility.GetPartIdxByName(data.Item1.name)];
@@ -189,7 +189,7 @@ namespace BVH {
         void Update()
         {
             if(Root && gameObject.activeSelf){
-                ApplyFrame(Time.time);
+                ApplyFrame(Time.time / 5);
             }
         }
 

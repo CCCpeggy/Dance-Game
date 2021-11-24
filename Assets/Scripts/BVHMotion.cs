@@ -7,18 +7,8 @@ using UnityEngine.Assertions;
 
 namespace BVH {
     public class BVHMotion{
-        private int frameCount;
-        public int FrameCount{
-            get{
-                return frameCount;
-            }
-        }
-        private float frameTime;
-        public float FrameTime{
-            get{
-                return frameTime;
-            }
-        }
+        public int FrameCount;
+        public float FrameTime;
         public class Frame{
             public Vector3 Position = new Vector3();
             public Quaternion[] Rotation;
@@ -32,29 +22,29 @@ namespace BVH {
                 return newFrame;
             }
         }
-        public List<Frame> motionData;
+        public List<Frame> MotionData;
         public Frame TPose = null;
         public BVHObject BvhObj = null;
-        public BVHMotion Clone(){
+        public BVHMotion Clone(BVHObject belongBVH){
             BVHMotion bVHMotion = new BVHMotion();
-            bVHMotion.frameCount = frameCount;
-            bVHMotion.frameTime = frameTime;
-            bVHMotion.BvhObj = BvhObj;
-            bVHMotion.motionData = new List<Frame>();
-            for(int i = 0; i < motionData.Count; i++)  
-                bVHMotion.motionData.Add(motionData[i].Clone());
+            bVHMotion.FrameCount = FrameCount;
+            bVHMotion.FrameTime = FrameTime;
+            bVHMotion.BvhObj = belongBVH;
+            bVHMotion.MotionData = new List<Frame>();
+            for(int i = 0; i < MotionData.Count; i++)  
+                bVHMotion.MotionData.Add(MotionData[i].Clone());
             return bVHMotion;
         }
         public static BVHMotion readMotion(ref IEnumerator<string> bvhDataIter, BVHObject obj, bool isTPoseType=false) {
             BVHMotion motion = new BVHMotion();
             motion.BvhObj = obj;
             Utility.IterData.CheckAndNext(ref bvhDataIter, "Frames:");
-            motion.frameCount = int.Parse(Utility.IterData.GetAndNext(ref bvhDataIter));
+            motion.FrameCount = int.Parse(Utility.IterData.GetAndNext(ref bvhDataIter));
             Utility.IterData.CheckAndNext(ref bvhDataIter, "Frame");
             Utility.IterData.CheckAndNext(ref bvhDataIter, "Time:");
-            motion.frameTime = float.Parse(Utility.IterData.GetAndNext(ref bvhDataIter));
-            motion.motionData = new List<Frame>();
-            for (int i = 0; i < motion.frameCount; i++) {
+            motion.FrameTime = float.Parse(Utility.IterData.GetAndNext(ref bvhDataIter));
+            motion.MotionData = new List<Frame>();
+            for (int i = 0; i < motion.FrameCount; i++) {
                 Frame frame = (isTPoseType && i != 0) ? motion.TPose.Clone() : new Frame(obj.Part.Length);
                 for (int j = 0; j < obj.Part.Length; j++) {
                     frame.Rotation[j] = Quaternion.Euler(0, 0, 0);
@@ -74,56 +64,64 @@ namespace BVH {
                     }
                 }
                 if(isTPoseType && i == 0) motion.TPose = frame;
-                else motion.motionData.Add(frame);
+                else motion.MotionData.Add(frame);
             }
             if (isTPoseType) {
-                motion.frameCount--;
+                motion.FrameCount--;
             }
             return motion;
         }
 
         public void ApplyFrame(float frameIdx) {
             int previousFrameIdx = (int)frameIdx;
-            int nextFrameIdx = (previousFrameIdx + 1) % frameCount;
+            int nextFrameIdx = (previousFrameIdx + 1) % FrameCount;
             float alpha = frameIdx - previousFrameIdx;
             var Part = BvhObj.Part;
             for(int i = 0; i < Part.Length; i++){
-                Quaternion previousRotValue = motionData[previousFrameIdx].Rotation[i];
-                Quaternion nextRotValue = motionData[nextFrameIdx].Rotation[i];
+                Quaternion previousRotValue = MotionData[previousFrameIdx].Rotation[i];
+                Quaternion nextRotValue = MotionData[nextFrameIdx].Rotation[i];
                 Quaternion thisRotValue = Utility.GetQuaternionAvg(previousRotValue, nextRotValue, alpha);
                 Part[i].transform.localPosition = Part[i].Offset;
                 Part[i].transform.localRotation = thisRotValue;
             }
 
-            Vector3 previousPos = motionData[previousFrameIdx].Position;
-            Vector3 nextPos = motionData[nextFrameIdx].Position;
-            BvhObj.Root.transform.position += previousPos * (1 - alpha) + nextPos * alpha;
+            //Vector3 previousPos = MotionData[previousFrameIdx].Position;
+            //Vector3 nextPos = MotionData[nextFrameIdx].Position;
+            //BvhObj.Root.transform.position += previousPos * (1 - alpha) + nextPos * alpha;
             BvhObj.UpdateLines();
         }
         public void ResetMotionInfo(int frameCount, float frameTime) {
-            this.frameCount = frameCount;
-            this.frameTime = frameTime;
-            if (this.motionData == null)
-                this.motionData = new List<Frame>();
+            this.FrameCount = frameCount;
+            this.FrameTime = frameTime;
+            if (this.MotionData == null)
+                this.MotionData = new List<Frame>();
             else
-                this.motionData.Clear();
+                this.MotionData.Clear();
         }
         public Vector3 getFramePosition(float frameIdx) {
             int previousFrameIdx = (int)frameIdx;
-            int nextFrameIdx = (previousFrameIdx + 1) % frameCount;
-            Vector3 previous = motionData[previousFrameIdx].Position;
-            Vector3 next = motionData[nextFrameIdx].Position;
+            int nextFrameIdx = (previousFrameIdx + 1) % FrameCount;
+            Vector3 previous = MotionData[previousFrameIdx].Position;
+            Vector3 next = MotionData[nextFrameIdx].Position;
             float alpha = frameIdx - previousFrameIdx;
             return previous * (1 - alpha) + next * alpha;
         }
         public Quaternion getFrameQuaternion(float frameIdx, int partIdx) {
             int previousFrameIdx = (int)frameIdx;
-            int nextFrameIdx = (previousFrameIdx + 1) % frameCount;
-            Quaternion previous = motionData[previousFrameIdx].Rotation[partIdx];
-            Quaternion next = motionData[nextFrameIdx].Rotation[partIdx];
+            int nextFrameIdx = (previousFrameIdx + 1) % FrameCount;
+            Quaternion previous = MotionData[previousFrameIdx].Rotation[partIdx];
+            Quaternion next = MotionData[nextFrameIdx].Rotation[partIdx];
             float alpha = frameIdx - previousFrameIdx;
             var angle = Utility.GetQuaternionAvg(previous, next, alpha);
             return angle;
+        }
+        public Frame getFrame(float frameIdx) {
+            Frame frame = new Frame(BvhObj.Part.Length);
+            frame.Position = getFramePosition(frameIdx);
+            for (int i = 0; i < BvhObj.Part.Length; i++) {
+                frame.Rotation[i] = getFrameQuaternion(frameIdx, i);
+            }
+            return frame;
         }
     }
 }

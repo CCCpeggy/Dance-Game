@@ -10,12 +10,12 @@ namespace BVH {
         public BVHObject BvhObj = null;
         public List<BVHPartObject> Child = new List<BVHPartObject>();
         public BVHPartObject Parent = null;
-        public BVHPartObject Clone(BVHPartObject parentObject=null){
-            BVHPartObject newPart = BVHPartObject.CreateGameObject(name, parentObject, BvhObj);
+        public BVHPartObject Clone(BVHObject belongBVH, BVHPartObject parentObject=null){
+            BVHPartObject newPart = BVHPartObject.CreateGameObject(name, parentObject, belongBVH);
             newPart.PartIdx = PartIdx;
             newPart.Offset = Offset;
             foreach(var child in Child) {
-                child.Clone(newPart);
+                child.Clone(belongBVH, newPart);
             }
             return newPart;
         }

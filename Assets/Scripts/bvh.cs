@@ -2,17 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[ExecuteInEditMode]
 public class bvh : MonoBehaviour
 {
     public List<BVH.BVHObject> BVHObjects = new List<BVH.BVHObject>();
     void Start() {
         BVHObjects.Clear();
-        BVH.BVHObject.CreateBVHObjectByPath(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true);
-        BVH.BVHObject.CreateBVHObjectByPath(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_04b.bvh", true);
+        var motion1 = BVH.BVHObject.CreateBVHObjectByPath(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true);
+        var motion2 = BVH.BVHObject.CreateBVHObjectByPath(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_04b.bvh", true);
+        new BVH.TimeWarping(motion1.GetComponent<BVH.BVHObject>(), motion2.GetComponent<BVH.BVHObject>()).Do();
     }
 }
 
+// [ExecuteInEditMode]
 [CustomEditor(typeof(bvh))]
 public class bvhEditor : Editor
 {
@@ -35,10 +36,6 @@ public class bvhEditor : Editor
             {
                 Debug.Log("Something Error");
             }
-        }
-        if (GUILayout.Button("Registrationi Curves"))
-        {
-            BVH.Blend.Do(myBvh.BVHObjects);
         }
         serializedObject.ApplyModifiedProperties();
     }
