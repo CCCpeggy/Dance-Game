@@ -325,10 +325,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1902069225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47c8c7c287180bb43b40f756a78fc314, type: 3}
+  m_Script: {fileID: 11500000, guid: a9502df998ad1d54d8305ceabc654cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BVHObjects: []
+  PoseObjects: []
 --- !u!4 &1902069227
 Transform:
   m_ObjectHideFlags: 0
