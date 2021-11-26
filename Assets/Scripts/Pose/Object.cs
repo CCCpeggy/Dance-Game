@@ -20,6 +20,19 @@ namespace Pose {
             poseObject.Read(bvhStrData, isTPoseType);
             return gameObject;
         }
+        public static GameObject CreatePoseObj(bool initOffset = false) {
+            GameObject gameObject = new GameObject();
+            gameObject.name = "pose";
+            var poseObject = gameObject.AddComponent<Object>();
+            poseObject.Part = new PartObject[PositionIndex.Count.Int()];
+            for (int i = 0; i < PositionIndex.Count.Int(); i++) {
+                poseObject.Part[i] = PartObject.CreateGameObject("joint"+i, null, poseObject);
+            }
+            if (initOffset) {
+                
+            }
+            return gameObject;
+        }
         public Object Clone(bool isMotion=true){
             GameObject newObj = new GameObject();
             var newPose = newObj.AddComponent<Object>();

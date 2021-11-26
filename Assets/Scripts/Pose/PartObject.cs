@@ -19,6 +19,15 @@ namespace Pose {
             }
             return newPart;
         }
+        // public PartObject CreatePartObject(Object belongObj, int partIdx, Vector3 offset) {
+        //     PartObject newPart = PartObject.CreateGameObject(name, parentObject, belongObj);
+        //     newPart.PartIdx = partIdx;
+        //     newPart.Offset = offset;
+        //     foreach(var child in Child) {
+        //         child.Clone(belongObj, newPart);
+        //     }
+        //     return newPart;
+        // }
 
         public static PartObject ReadPart(ref IEnumerator<string> bvhDataIter, Object obj, PartObject parentObject=null) {
             List<string> partNameList = new List<string>();
