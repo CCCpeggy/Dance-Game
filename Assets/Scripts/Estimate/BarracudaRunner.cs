@@ -132,7 +132,6 @@ public class BarracudaRunner : MonoBehaviour
     /// </summary>
     public float LowPassParam;
 
-    public Text Msg;
     public float WaitTimeModelLoad = 10f;
     private float Countdown = 0;
     public Texture2D InitImg;
@@ -166,11 +165,28 @@ public class BarracudaRunner : MonoBehaviour
 
     }
 
+    bool isStart = false;
+    int count = 0;
     private void Update()
     {
+            
         if (!Lock)
         {
-            UpdateVNectModel();
+            if (!isStart && count > 220)
+                videoCapture.VideoPlayer.Play();
+            else count++;
+            if (videoCapture.VideoPlayer.isPlaying) {
+                EstimateModel.PoseStart();
+                UpdateVNectModel();
+                isStart = true;
+            }
+            else if (isStart){
+                UpdateVNectModel(false);
+                EstimateModel.PoseEnd();
+            }
+            else {
+                UpdateVNectModel();
+            }
         }
     }
 
@@ -209,17 +225,11 @@ public class BarracudaRunner : MonoBehaviour
         // Init VideoCapture
         videoCapture.Init(InputImageSize, InputImageSize);
         Lock = false;
-        Msg.gameObject.SetActive(false);
     }
 
     private const string inputName_1 = "input.1";
     private const string inputName_2 = "input.4";
     private const string inputName_3 = "input.7";
-    /*
-    private const string inputName_1 = "0";
-    private const string inputName_2 = "1";
-    private const string inputName_3 = "2";
-    */
 
     private void UpdateVNectModel()
     {
@@ -238,7 +248,6 @@ public class BarracudaRunner : MonoBehaviour
             inputs[inputName_2] = inputs[inputName_1];
             inputs[inputName_1] = input;
         }
-
         StartCoroutine(ExecuteModelAsync());
     }
 
@@ -253,8 +262,7 @@ public class BarracudaRunner : MonoBehaviour
     private IEnumerator ExecuteModelAsync()
     {
         // Create input and Execute model
-        yield return _worker.StartManualSchedule(inputs);
-
+        return _worker.StartManualSchedule(inputs);
         // Get outputs
         for (var i = 2; i < _model.outputs.Count; i++)
         {

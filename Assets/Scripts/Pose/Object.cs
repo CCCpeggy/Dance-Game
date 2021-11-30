@@ -11,6 +11,12 @@ namespace Pose {
         public Motion Motion;
         public List<Tuple<PartObject, int>> ChannelDatas = new List<Tuple<PartObject, int>>();
         public PartObject[] Part;
+        public enum StatusType {
+            None,
+            Recording,
+            Playing
+        }
+        public StatusType Status;
         public static GameObject CreatePoseObjByBVH(string filename, bool isTPoseType=false) {
             GameObject gameObject = new GameObject();
             var filenameArr = filename.Split('\\');
@@ -18,9 +24,10 @@ namespace Pose {
             var poseObject = gameObject.AddComponent<Object>();
             string bvhStrData = System.IO.File.ReadAllText(filename);
             poseObject.Read(bvhStrData, isTPoseType);
+            poseObject.Status = StatusType.Playing;
             return gameObject;
         }
-        public static GameObject CreatePoseObj(bool initOffset = false) {
+        public static GameObject CreatePoseObj() {
             GameObject gameObject = new GameObject();
             gameObject.name = "pose";
             var poseObject = gameObject.AddComponent<Object>();
@@ -28,9 +35,8 @@ namespace Pose {
             for (int i = 0; i < PositionIndex.Count.Int(); i++) {
                 poseObject.Part[i] = PartObject.CreateGameObject("joint"+i, null, poseObject);
             }
-            if (initOffset) {
-                
-            }
+            poseObject.Status = StatusType.None;
+            poseObject.Motion = Motion.Create(poseObject);
             return gameObject;
         }
         public Object Clone(bool isMotion=true){
@@ -176,7 +182,7 @@ namespace Pose {
             }
         }
         
-         public void RenamePartCMU() {
+        public void RenamePartCMU() {
             Part = new PartObject[31];
             List<PartObject> bfs = new List<PartObject>();
             bfs.Add(Root);
@@ -199,10 +205,19 @@ namespace Pose {
             }
         }
 
-        void Update()
+        void LateUpdate()
         {
-            if(Root && gameObject.activeSelf){
-                ApplyFrame(Time.time / 5);
+            switch(Status) {
+                case StatusType.None:
+                    break;
+                case StatusType.Recording:
+                    Motion.Record();
+                    break;
+                case StatusType.Playing:
+                    if(Root && gameObject.activeSelf){
+                        ApplyFrame(Time.time);
+                    }
+                    break;
             }
         }
 

@@ -22,26 +22,15 @@ public class EstimateModel : MonoBehaviour
     private VNectModel.JointPoint[] jointPoints;
     public VNectModel.JointPoint[] JointPoints { get { return jointPoints; } }
 
-    private Vector3 initPosition; // Initial center position
-
-    private Quaternion InitGazeRotation;
-    private Quaternion gazeInverse;
-
     // Pose
     private GameObject poseGameObj;
     private Pose.Object poseObj;
-
-    // Move in z direction
-    private float centerTall = 224 * 0.75f;
-    private float tall = 224 * 0.75f;
-    private float prevTall = 224 * 0.75f;
-    public float ZScale = 0.8f;
 
     private void Update()
     {
         if (jointPoints != null)
         {
-            PoseUpdate();
+           PoseUpdate();
         }
     }
 
@@ -58,69 +47,76 @@ public class EstimateModel : MonoBehaviour
 
         // Right Arm
         jointPoints[PositionIndex.rShldrBend.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rForearmBend.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rHand.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rThumb2.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rMid1.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
+        jointPoints[PositionIndex.rForearmBend.Int()].Transform = poseObj.Part[PositionIndex.rForearmBend.Int()].transform;
+        jointPoints[PositionIndex.rHand.Int()].Transform = poseObj.Part[PositionIndex.rHand.Int()].transform;
+        jointPoints[PositionIndex.rThumb2.Int()].Transform = poseObj.Part[PositionIndex.rThumb2.Int()].transform;
+        jointPoints[PositionIndex.rMid1.Int()].Transform = poseObj.Part[PositionIndex.rMid1.Int()].transform;
         // Left Arm
-        jointPoints[PositionIndex.lShldrBend.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.lForearmBend.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.lHand.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.lThumb2.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.lMid1.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
+        jointPoints[PositionIndex.lShldrBend.Int()].Transform = poseObj.Part[PositionIndex.lShldrBend.Int()].transform;
+        jointPoints[PositionIndex.lForearmBend.Int()].Transform = poseObj.Part[PositionIndex.lForearmBend.Int()].transform;
+        jointPoints[PositionIndex.lHand.Int()].Transform = poseObj.Part[PositionIndex.lHand.Int()].transform;
+        jointPoints[PositionIndex.lThumb2.Int()].Transform = poseObj.Part[PositionIndex.lThumb2.Int()].transform;
+        jointPoints[PositionIndex.lMid1.Int()].Transform = poseObj.Part[PositionIndex.lMid1.Int()].transform;
 
         // Face
-        jointPoints[PositionIndex.lEar.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.lEye.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rEar.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rEye.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
+        jointPoints[PositionIndex.lEar.Int()].Transform = poseObj.Part[PositionIndex.lEar.Int()].transform;
+        jointPoints[PositionIndex.lEye.Int()].Transform = poseObj.Part[PositionIndex.lEye.Int()].transform;
+        jointPoints[PositionIndex.rEar.Int()].Transform = poseObj.Part[PositionIndex.rEar.Int()].transform;
+        jointPoints[PositionIndex.rEye.Int()].Transform = poseObj.Part[PositionIndex.rEye.Int()].transform;
         jointPoints[PositionIndex.Nose.Int()].Transform = poseObj.Part[PositionIndex.Nose.Int()].transform;
 
         // Right Leg
-        jointPoints[PositionIndex.rThighBend.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rShin.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rFoot.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.rToe.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
+        jointPoints[PositionIndex.rThighBend.Int()].Transform = poseObj.Part[PositionIndex.rThighBend.Int()].transform;
+        jointPoints[PositionIndex.rShin.Int()].Transform = poseObj.Part[PositionIndex.rShin.Int()].transform;
+        jointPoints[PositionIndex.rFoot.Int()].Transform = poseObj.Part[PositionIndex.rFoot.Int()].transform;
+        jointPoints[PositionIndex.rToe.Int()].Transform = poseObj.Part[PositionIndex.rToe.Int()].transform;
 
         // Left Leg
-        jointPoints[PositionIndex.lThighBend.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.lShin.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.lFoot.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.lToe.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
+        jointPoints[PositionIndex.lThighBend.Int()].Transform = poseObj.Part[PositionIndex.lThighBend.Int()].transform;
+        jointPoints[PositionIndex.lShin.Int()].Transform = poseObj.Part[PositionIndex.lShin.Int()].transform;
+        jointPoints[PositionIndex.lFoot.Int()].Transform = poseObj.Part[PositionIndex.lFoot.Int()].transform;
+        jointPoints[PositionIndex.lToe.Int()].Transform = poseObj.Part[PositionIndex.lToe.Int()].transform;
 
         // etc
-        jointPoints[PositionIndex.abdomenUpper.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.hip.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.head.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.neck.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
-        jointPoints[PositionIndex.spine.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
+        jointPoints[PositionIndex.abdomenUpper.Int()].Transform = poseObj.Part[PositionIndex.abdomenUpper.Int()].transform;
+        jointPoints[PositionIndex.hip.Int()].Transform = poseObj.Part[PositionIndex.hip.Int()].transform;
+        jointPoints[PositionIndex.head.Int()].Transform = poseObj.Part[PositionIndex.head.Int()].transform;
+        jointPoints[PositionIndex.neck.Int()].Transform = poseObj.Part[PositionIndex.neck.Int()].transform;
+        jointPoints[PositionIndex.spine.Int()].Transform = poseObj.Part[PositionIndex.spine.Int()].transform;
 
+
+        poseObj.Root = poseObj.Part[PositionIndex.hip.Int()];
         // Child Settings
         // Right Arm
+        poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.rShldrBend.Int()]);
         poseObj.Part[PositionIndex.rShldrBend.Int()].AddChild(poseObj.Part[PositionIndex.rForearmBend.Int()]);
         poseObj.Part[PositionIndex.rForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.rHand.Int()]);
-        poseObj.Part[PositionIndex.rForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.rShldrBend.Int()]);
+        // poseObj.Part[PositionIndex.rForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.rShldrBend.Int()]);
 
         // Left Arm
+        poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.lShldrBend.Int()]);
         poseObj.Part[PositionIndex.lShldrBend.Int()].AddChild(poseObj.Part[PositionIndex.lForearmBend.Int()]);
         poseObj.Part[PositionIndex.lForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.lHand.Int()]);
-        poseObj.Part[PositionIndex.lForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.lShldrBend.Int()]);
+        // poseObj.Part[PositionIndex.lForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.lShldrBend.Int()]);
 
         // Fase
 
         // Right Leg
+        poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.rThighBend.Int()]);
         poseObj.Part[PositionIndex.rThighBend.Int()].AddChild(poseObj.Part[PositionIndex.rShin.Int()]);
         poseObj.Part[PositionIndex.rShin.Int()].AddChild(poseObj.Part[PositionIndex.rFoot.Int()]);
         poseObj.Part[PositionIndex.rFoot.Int()].AddChild(poseObj.Part[PositionIndex.rToe.Int()]);
-        poseObj.Part[PositionIndex.rFoot.Int()].AddChild(poseObj.Part[PositionIndex.rShin.Int()]);
+        // poseObj.Part[PositionIndex.rFoot.Int()].AddChild(poseObj.Part[PositionIndex.rShin.Int()]);
 
         // Left Leg
+        poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.lThighBend.Int()]);
         poseObj.Part[PositionIndex.lThighBend.Int()].AddChild(poseObj.Part[PositionIndex.lShin.Int()]);
         poseObj.Part[PositionIndex.lShin.Int()].AddChild(poseObj.Part[PositionIndex.lFoot.Int()]);
         poseObj.Part[PositionIndex.lFoot.Int()].AddChild(poseObj.Part[PositionIndex.lToe.Int()]);
-        poseObj.Part[PositionIndex.lFoot.Int()].AddChild(poseObj.Part[PositionIndex.lShin.Int()]);
+        // poseObj.Part[PositionIndex.lFoot.Int()].AddChild(poseObj.Part[PositionIndex.lShin.Int()]);
 
         // etc
+        poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.spine.Int()]);
         poseObj.Part[PositionIndex.spine.Int()].AddChild(poseObj.Part[PositionIndex.neck.Int()]);
         poseObj.Part[PositionIndex.neck.Int()].AddChild(poseObj.Part[PositionIndex.head.Int()]);
         //jointPoints[PositionIndex.head.Int()].Child = jointPoints[PositionIndex.Nose.Int()];
@@ -214,13 +210,12 @@ public class EstimateModel : MonoBehaviour
         jointPoints[PositionIndex.Nose.Int()].score3D = 1f;
         jointPoints[PositionIndex.head.Int()].score3D = 1f;
         jointPoints[PositionIndex.spine.Int()].score3D = 1f;
-
-
         return JointPoints;
     }
 
     public void PoseUpdate()
     {
+        if (poseObj.Status == Pose.Object.StatusType.Playing) return;
         // // caliculate movement range of z-coordinate from height
         // var t1 = Vector3.Distance(jointPoints[PositionIndex.head.Int()].Pos3D, jointPoints[PositionIndex.neck.Int()].Pos3D);
         // var t2 = Vector3.Distance(jointPoints[PositionIndex.neck.Int()].Pos3D, jointPoints[PositionIndex.spine.Int()].Pos3D);
@@ -253,16 +248,13 @@ public class EstimateModel : MonoBehaviour
         // rotate each of bones
         foreach (var jointPoint in jointPoints)
         {
-            if (jointPoint.Parent != null)
-            {
-                var fv = jointPoint.Parent.Pos3D - jointPoint.Pos3D;
-                jointPoint.Transform.rotation = Quaternion.LookRotation(jointPoint.Pos3D - jointPoint.Child.Pos3D, fv) * jointPoint.InverseRotation;
-            }
-            else if (jointPoint.Child != null)
-            {
-                jointPoint.Transform.rotation = Quaternion.LookRotation(jointPoint.Pos3D - jointPoint.Child.Pos3D, forward) * jointPoint.InverseRotation;
+            Vector3 vec = jointPoint.Pos3D * SkeletonScale;
+            jointPoint.Transform.position = new Vector3(vec.x, vec.y + 1, vec.z);
+            if (jointPoint.Transform.GetComponent<Pose.PartObject>().Parent == null) {
+                jointPoint.Transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             }
         }
+        // poseObj.UpdateLines();
 
         // // Head Rotation
         // var gaze = jointPoints[PositionIndex.Nose.Int()].Pos3D - jointPoints[PositionIndex.head.Int()].Pos3D;
@@ -288,8 +280,16 @@ public class EstimateModel : MonoBehaviour
             sk.Line.SetPosition(0, new Vector3(s.Pos3D.x * SkeletonScale + SkeletonX, s.Pos3D.y * SkeletonScale + SkeletonY, s.Pos3D.z * SkeletonScale + SkeletonZ));
             sk.Line.SetPosition(1, new Vector3(e.Pos3D.x * SkeletonScale + SkeletonX, e.Pos3D.y * SkeletonScale + SkeletonY, e.Pos3D.z * SkeletonScale + SkeletonZ));
         }
+        if (poseObj.Status == Pose.Object.StatusType.Recording)
+            poseObj.Motion.Record();
     }
 
+    public void PoseEnd() {
+        poseObj.Status = Pose.Object.StatusType.Playing;
+    }
+    public void PoseStart() {
+        poseObj.Status = Pose.Object.StatusType.Recording;
+    }
     Vector3 TriangleNormal(Vector3 a, Vector3 b, Vector3 c)
     {
         Vector3 d1 = a - b;

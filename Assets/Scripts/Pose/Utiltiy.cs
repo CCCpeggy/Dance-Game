@@ -161,7 +161,10 @@ namespace Pose {
 
         public static Quaternion GetQuaternionAvg(Quaternion a1, Quaternion a2, float alpha) {
             return Quaternion.Lerp(a1, a2, alpha);
-            ;
+        }
+
+        public static Vector3 GetVectorAvg(Vector3 a1, Vector3 a2, float alpha) {
+            return a1 * (1 - alpha) + a2 * alpha;
         }
 
         public class IterData {

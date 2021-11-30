@@ -11,14 +11,26 @@ namespace Pose {
         public float FrameTime;
         public class Frame{
             public Vector3 Position = new Vector3();
-            public Quaternion[] Rotation;
-            public Frame(int count = 18) {
-                Rotation = new Quaternion[count];
+            public Vector3[] JointPosition;
+            public Quaternion[] JointRotation;
+            public enum JointType {
+                Position, Rotation
+            }
+            public JointType type;
+            public Frame(int count = 18, JointType type = JointType.Rotation) {
+                switch(type) {
+                    case JointType.Position:
+                        JointPosition = new Vector3[count];
+                        break;
+                    case JointType.Rotation:
+                        JointRotation = new Quaternion[count];
+                        break;
+                }
             }
             public Frame Clone() {
                 Frame newFrame = new Frame();
                 newFrame.Position = Position;
-                newFrame.Rotation = Rotation.Clone() as Quaternion[];
+                newFrame.JointRotation = JointRotation.Clone() as Quaternion[];
                 return newFrame;
             }
         }
@@ -33,6 +45,14 @@ namespace Pose {
             poseMotion.MotionData = new List<Frame>();
             for(int i = 0; i < MotionData.Count; i++)  
                 poseMotion.MotionData.Add(MotionData[i].Clone());
+            return poseMotion;
+        }
+        public static Motion Create(Object belongObj){
+            Motion poseMotion = new Motion();
+            poseMotion.FrameCount = 0;
+            poseMotion.FrameTime = 0;
+            poseMotion.PoseObj = belongObj;
+            poseMotion.MotionData = new List<Frame>();
             return poseMotion;
         }
         public static Motion readMotion(ref IEnumerator<string> bvhDataIter, Object obj, bool isTPoseType=false) {
@@ -56,7 +76,7 @@ namespace Pose {
                     frame = new Frame(obj.Part.Length);
                     for (int j = 0; j < obj.Part.Length; j++)
                     {
-                        frame.Rotation[j] = Quaternion.Euler(0, 0, 0);
+                        frame.JointRotation[j] = Quaternion.Euler(0, 0, 0);
                     }
                 }
                 for (int j = 0; j < obj.ChannelDatas.Count; j++) {
@@ -68,9 +88,9 @@ namespace Pose {
                         frame.Position[infoIdx - 3] += num;
                     }
                     else {
-                        if (infoIdx == 0) frame.Rotation[partIdx] *= Quaternion.Euler(num, 0, 0);
-                        else if (infoIdx == 1) frame.Rotation[partIdx] *= Quaternion.Euler(0, num, 0);
-                        else if (infoIdx == 2) frame.Rotation[partIdx] *= Quaternion.Euler(0, 0, num);
+                        if (infoIdx == 0) frame.JointRotation[partIdx] *= Quaternion.Euler(num, 0, 0);
+                        else if (infoIdx == 1) frame.JointRotation[partIdx] *= Quaternion.Euler(0, num, 0);
+                        else if (infoIdx == 2) frame.JointRotation[partIdx] *= Quaternion.Euler(0, 0, num);
                     }
                 }
                 motion.MotionData.Add(frame);
@@ -88,19 +108,36 @@ namespace Pose {
             int nextFrameIdx = (previousFrameIdx + 1) % FrameCount;
             float alpha = frameIdx - previousFrameIdx;
             var Part = PoseObj.Part;
+            var previousMotionData = MotionData[previousFrameIdx];
+            var nextMotionData = MotionData[nextFrameIdx];
+            if (previousMotionData.type != nextMotionData.type) {
+                Debug.LogError("frame 型態不相符");
+                return;
+            }
             for (int i = 0; i < Part.Length; i++)
             {
-                Quaternion previousRotValue = MotionData[previousFrameIdx].Rotation[i];
-                Quaternion nextRotValue = MotionData[nextFrameIdx].Rotation[i];
-                Quaternion thisRotValue = Utility.GetQuaternionAvg(previousRotValue, nextRotValue, alpha);
-                Part[i].transform.localPosition = Part[i].Offset;
-                Part[i].transform.localRotation = thisRotValue;
+                switch (previousMotionData.type) {
+                    case Frame.JointType.Rotation:
+                        Quaternion previousRotValue = previousMotionData.JointRotation[i];
+                        Quaternion nextRotValue = nextMotionData.JointRotation[i];
+                        Quaternion thisRotValue = Utility.GetQuaternionAvg(previousRotValue, nextRotValue, alpha);
+                        Part[i].transform.localPosition = Part[i].Offset;
+                        Part[i].transform.localRotation = thisRotValue;
+                        break;
+                    case Frame.JointType.Position:
+                        Vector3 previousPosValue = previousMotionData.JointPosition[i];
+                        Vector3 nextPosValue = nextMotionData.JointPosition[i];
+                        Vector3 thisPosValue = Utility.GetVectorAvg(previousPosValue, nextPosValue, alpha);
+                        // Debug.Log(thisPosValue);
+                        Part[i].transform.localPosition = thisPosValue;
+                        break;
+                }
             }
 
             //Vector3 previousPos = MotionData[previousFrameIdx].Position;
             //Vector3 nextPos = MotionData[nextFrameIdx].Position;
             //PoseObj.Root.transform.position += previousPos * (1 - alpha) + nextPos * alpha;
-            PoseObj.UpdateLines();
+            // PoseObj.UpdateLines();
         }
         public void ResetMotionInfo(int frameCount, float frameTime) {
             this.FrameCount = frameCount;
@@ -121,8 +158,8 @@ namespace Pose {
         public Quaternion getFrameQuaternion(float frameIdx, int partIdx) {
             int previousFrameIdx = (int)frameIdx;
             int nextFrameIdx = (previousFrameIdx + 1) % FrameCount;
-            Quaternion previous = MotionData[previousFrameIdx].Rotation[partIdx];
-            Quaternion next = MotionData[nextFrameIdx].Rotation[partIdx];
+            Quaternion previous = MotionData[previousFrameIdx].JointRotation[partIdx];
+            Quaternion next = MotionData[nextFrameIdx].JointRotation[partIdx];
             float alpha = frameIdx - previousFrameIdx;
             var angle = Utility.GetQuaternionAvg(previous, next, alpha);
             return angle;
@@ -131,9 +168,53 @@ namespace Pose {
             Frame frame = new Frame(PoseObj.Part.Length);
             frame.Position = getFramePosition(frameIdx);
             for (int i = 0; i < PoseObj.Part.Length; i++) {
-                frame.Rotation[i] = getFrameQuaternion(frameIdx, i);
+                frame.JointRotation[i] = getFrameQuaternion(frameIdx, i);
             }
             return frame;
+        }
+        // public void Record() {
+        //     var Part = PoseObj.Part;
+        //     if (MotionData == null) {
+        //         MotionData = new List<Frame>();
+        //     }
+        //     if (MotionData.Count == 0) {
+        //         for (int i = 0; i < Part.Length; i++)
+        //         {
+        //             Part[i].Offset = Part[i].transform.localPosition;
+        //         }
+        //         FrameTime = Time.deltaTime;
+        //         FrameCount = 0;
+        //     }
+        //     Frame frame = new Frame(Part.Length);
+        //     frame.Position = PoseObj.Root.transform.localPosition;
+        //     for (int i = 0; i < Part.Length; i++)
+        //     {
+        //         frame.Rotation[i] = Part[i].transform.localRotation;
+        //         Vector3 oldVec = Part[i].transform.localRotation
+        //         Quaternion.FromToRotation()
+        //         Debug.Log(frame.Rotation[i]);
+        //     }
+        //     MotionData.Add(frame);
+        //     FrameCount++;
+        // }
+        public void Record() {
+            PoseObj.Status = Object.StatusType.Recording;
+            var Part = PoseObj.Part;
+            if (MotionData == null) {
+                MotionData = new List<Frame>();
+            }
+            Frame frame = new Frame(Part.Length, Frame.JointType.Position);
+            if (MotionData.Count == 0) {
+                FrameTime = Time.deltaTime;
+                FrameCount = 0;
+            }
+            // frame.Position = PoseObj.Root.transform.localPosition;
+            for (int i = 0; i < Part.Length; i++)
+            {
+                frame.JointPosition[i] = Part[i].transform.localPosition;
+            }
+            MotionData.Add(frame);
+            FrameCount++;
         }
     }
 }
