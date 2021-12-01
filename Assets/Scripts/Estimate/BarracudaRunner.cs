@@ -181,7 +181,6 @@ public class BarracudaRunner : MonoBehaviour
                 isStart = true;
             }
             else if (isStart){
-                UpdateVNectModel(false);
                 EstimateModel.PoseEnd();
             }
             else {
@@ -262,7 +261,7 @@ public class BarracudaRunner : MonoBehaviour
     private IEnumerator ExecuteModelAsync()
     {
         // Create input and Execute model
-        return _worker.StartManualSchedule(inputs);
+        yield return _worker.StartManualSchedule(inputs);
         // Get outputs
         for (var i = 2; i < _model.outputs.Count; i++)
         {

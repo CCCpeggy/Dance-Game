@@ -17,7 +17,9 @@ namespace Pose {
                 Position, Rotation
             }
             public JointType type;
-            public Frame(int count = 18, JointType type = JointType.Rotation) {
+            public Frame(int count = 18, JointType type = JointType.Rotation)
+            {
+                this.type = type;
                 switch(type) {
                     case JointType.Position:
                         JointPosition = new Vector3[count];
@@ -30,7 +32,16 @@ namespace Pose {
             public Frame Clone() {
                 Frame newFrame = new Frame();
                 newFrame.Position = Position;
-                newFrame.JointRotation = JointRotation.Clone() as Quaternion[];
+                newFrame.type = type;
+                switch (type)
+                {
+                    case JointType.Position:
+                        newFrame.JointPosition = JointPosition.Clone() as Vector3[];
+                        break;
+                    case JointType.Rotation:
+                        newFrame.JointRotation = JointRotation.Clone() as Quaternion[];
+                        break;
+                }
                 return newFrame;
             }
         }
@@ -73,7 +84,7 @@ namespace Pose {
                 }
                 else
                 {
-                    frame = new Frame(obj.Part.Length);
+                    frame = new Frame(obj.Part.Length, Frame.JointType.Rotation);
                     for (int j = 0; j < obj.Part.Length; j++)
                     {
                         frame.JointRotation[j] = Quaternion.Euler(0, 0, 0);
