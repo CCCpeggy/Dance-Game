@@ -42,6 +42,7 @@ namespace Pose {
         public Object Clone(bool isMotion=true){
             GameObject newObj = new GameObject();
             var newPose = newObj.AddComponent<Object>();
+            newPose.Status = Status;
             newPose.Root = Root.Clone(newPose);
             newPose.Root.transform.parent = newObj.transform;
             newPose.RenamePartCMU();
@@ -190,7 +191,7 @@ namespace Pose {
             while (queueIdx < bfs.Count) {
                 var cur = bfs[queueIdx++];
                 if (cur.name == "End") continue;
-                int idx = Pose.Utility.CMUMotion.GetPartIdxByNameCMU(cur.name);
+                int idx = Pose.Utility.GetPartIdxByCMUName(cur.name);
                 if (idx >= 0) {
                     Part[idx] = cur;
                     cur.PartIdx = idx;
@@ -220,6 +221,7 @@ namespace Pose {
                     break;
             }
         }
+
 
     }
 

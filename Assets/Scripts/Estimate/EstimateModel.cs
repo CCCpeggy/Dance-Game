@@ -43,7 +43,10 @@ public class EstimateModel : MonoBehaviour
         poseGameObj = Pose.Object.CreatePoseObj();
         poseObj = poseGameObj.GetComponent<Pose.Object>();
         jointPoints = new VNectModel.JointPoint[PositionIndex.Count.Int()];
-        for (var i = 0; i < PositionIndex.Count.Int(); i++) jointPoints[i] = new VNectModel.JointPoint();
+        for (var i = 0; i < PositionIndex.Count.Int(); i++) {
+            jointPoints[i] = new VNectModel.JointPoint();
+            poseObj.Part[i].name = System.Enum.GetName(typeof(PositionIndex), i);
+        }
 
         // Right Arm
         jointPoints[PositionIndex.rShldrBend.Int()].Transform = poseObj.Part[PositionIndex.rShldrBend.Int()].transform;
@@ -121,50 +124,50 @@ public class EstimateModel : MonoBehaviour
         poseObj.Part[PositionIndex.neck.Int()].AddChild(poseObj.Part[PositionIndex.head.Int()]);
         //jointPoints[PositionIndex.head.Int()].Child = jointPoints[PositionIndex.Nose.Int()];
 
-        useSkeleton = ShowSkeleton;
-        if (useSkeleton)
-        {
-            // Line Child Settings
-            // Right Arm
-            AddSkeleton(PositionIndex.rShldrBend, PositionIndex.rForearmBend);
-            AddSkeleton(PositionIndex.rForearmBend, PositionIndex.rHand);
-            AddSkeleton(PositionIndex.rHand, PositionIndex.rThumb2);
-            AddSkeleton(PositionIndex.rHand, PositionIndex.rMid1);
+        // useSkeleton = ShowSkeleton;
+        // if (useSkeleton)
+        // {
+        //     // Line Child Settings
+        //     // Right Arm
+        //     AddSkeleton(PositionIndex.rShldrBend, PositionIndex.rForearmBend);
+        //     AddSkeleton(PositionIndex.rForearmBend, PositionIndex.rHand);
+        //     AddSkeleton(PositionIndex.rHand, PositionIndex.rThumb2);
+        //     AddSkeleton(PositionIndex.rHand, PositionIndex.rMid1);
 
-            // Left Arm
-            AddSkeleton(PositionIndex.lShldrBend, PositionIndex.lForearmBend);
-            AddSkeleton(PositionIndex.lForearmBend, PositionIndex.lHand);
-            AddSkeleton(PositionIndex.lHand, PositionIndex.lThumb2);
-            AddSkeleton(PositionIndex.lHand, PositionIndex.lMid1);
+        //     // Left Arm
+        //     AddSkeleton(PositionIndex.lShldrBend, PositionIndex.lForearmBend);
+        //     AddSkeleton(PositionIndex.lForearmBend, PositionIndex.lHand);
+        //     AddSkeleton(PositionIndex.lHand, PositionIndex.lThumb2);
+        //     AddSkeleton(PositionIndex.lHand, PositionIndex.lMid1);
 
-            // Fase
-            AddSkeleton(PositionIndex.lEar, PositionIndex.Nose);
-            AddSkeleton(PositionIndex.rEar, PositionIndex.Nose);
+        //     // Fase
+        //     AddSkeleton(PositionIndex.lEar, PositionIndex.Nose);
+        //     AddSkeleton(PositionIndex.rEar, PositionIndex.Nose);
 
-            // Right Leg
-            AddSkeleton(PositionIndex.rThighBend, PositionIndex.rShin);
-            AddSkeleton(PositionIndex.rShin, PositionIndex.rFoot);
-            AddSkeleton(PositionIndex.rFoot, PositionIndex.rToe);
+        //     // Right Leg
+        //     AddSkeleton(PositionIndex.rThighBend, PositionIndex.rShin);
+        //     AddSkeleton(PositionIndex.rShin, PositionIndex.rFoot);
+        //     AddSkeleton(PositionIndex.rFoot, PositionIndex.rToe);
 
-            // Left Leg
-            AddSkeleton(PositionIndex.lThighBend, PositionIndex.lShin);
-            AddSkeleton(PositionIndex.lShin, PositionIndex.lFoot);
-            AddSkeleton(PositionIndex.lFoot, PositionIndex.lToe);
+        //     // Left Leg
+        //     AddSkeleton(PositionIndex.lThighBend, PositionIndex.lShin);
+        //     AddSkeleton(PositionIndex.lShin, PositionIndex.lFoot);
+        //     AddSkeleton(PositionIndex.lFoot, PositionIndex.lToe);
 
-            // etc
-            AddSkeleton(PositionIndex.spine, PositionIndex.neck);
-            AddSkeleton(PositionIndex.neck, PositionIndex.head);
-            AddSkeleton(PositionIndex.head, PositionIndex.Nose);
-            AddSkeleton(PositionIndex.neck, PositionIndex.rShldrBend);
-            AddSkeleton(PositionIndex.neck, PositionIndex.lShldrBend);
-            AddSkeleton(PositionIndex.rThighBend, PositionIndex.rShldrBend);
-            AddSkeleton(PositionIndex.lThighBend, PositionIndex.lShldrBend);
-            AddSkeleton(PositionIndex.rShldrBend, PositionIndex.abdomenUpper);
-            AddSkeleton(PositionIndex.lShldrBend, PositionIndex.abdomenUpper);
-            AddSkeleton(PositionIndex.rThighBend, PositionIndex.abdomenUpper);
-            AddSkeleton(PositionIndex.lThighBend, PositionIndex.abdomenUpper);
-            AddSkeleton(PositionIndex.lThighBend, PositionIndex.rThighBend);
-        }
+        //     // etc
+        //     AddSkeleton(PositionIndex.spine, PositionIndex.neck);
+        //     AddSkeleton(PositionIndex.neck, PositionIndex.head);
+        //     AddSkeleton(PositionIndex.head, PositionIndex.Nose);
+        //     AddSkeleton(PositionIndex.neck, PositionIndex.rShldrBend);
+        //     AddSkeleton(PositionIndex.neck, PositionIndex.lShldrBend);
+        //     AddSkeleton(PositionIndex.rThighBend, PositionIndex.rShldrBend);
+        //     AddSkeleton(PositionIndex.lThighBend, PositionIndex.lShldrBend);
+        //     AddSkeleton(PositionIndex.rShldrBend, PositionIndex.abdomenUpper);
+        //     AddSkeleton(PositionIndex.lShldrBend, PositionIndex.abdomenUpper);
+        //     AddSkeleton(PositionIndex.rThighBend, PositionIndex.abdomenUpper);
+        //     AddSkeleton(PositionIndex.lThighBend, PositionIndex.abdomenUpper);
+        //     AddSkeleton(PositionIndex.lThighBend, PositionIndex.rThighBend);
+        // }
 
         // Set Inverse
         // var forward = TriangleNormal(jointPoints[PositionIndex.hip.Int()].Transform.position, jointPoints[PositionIndex.lThighBend.Int()].Transform.position, jointPoints[PositionIndex.rThighBend.Int()].Transform.position);
@@ -284,10 +287,14 @@ public class EstimateModel : MonoBehaviour
             poseObj.Motion.Record();
     }
 
-    public void PoseEnd() {
-        poseObj.Status = Pose.Object.StatusType.Playing;
+    public void PoseRecordEnd() {
+        if (poseObj.Status != Pose.Object.StatusType.Playing) {
+            poseObj.Status = Pose.Object.StatusType.Playing;
+            var cmuPose = Pose.VNectToCMU.Convert(poseObj);
+            cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        }
     }
-    public void PoseStart() {
+    public void PoseRecordStart() {
         poseObj.Status = Pose.Object.StatusType.Recording;
     }
     Vector3 TriangleNormal(Vector3 a, Vector3 b, Vector3 c)

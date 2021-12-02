@@ -176,12 +176,12 @@ public class BarracudaRunner : MonoBehaviour
                 videoCapture.VideoPlayer.Play();
             else count++;
             if (videoCapture.VideoPlayer.isPlaying) {
-                EstimateModel.PoseStart();
+                EstimateModel.PoseRecordStart();
                 UpdateVNectModel();
                 isStart = true;
             }
             else if (isStart){
-                EstimateModel.PoseEnd();
+                EstimateModel.PoseRecordEnd();
             }
             else {
                 UpdateVNectModel();
