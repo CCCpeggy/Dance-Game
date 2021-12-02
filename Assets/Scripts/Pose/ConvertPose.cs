@@ -44,8 +44,8 @@ namespace Pose {
             switch((CMUPartIdx) partIdx){
                 case CMUPartIdx.Hip:
                     return vNectFrame.JointPosition[PositionIndex.hip.Int()];
-                case CMUPartIdx.lButtock:
-                    return vNectFrame.JointPosition[PositionIndex.hip.Int()];
+                // case CMUPartIdx.lButtock:
+                //     return vNectFrame.JointPosition[PositionIndex.hip.Int()];
                 case CMUPartIdx.Left_Thigh:
                     return vNectFrame.JointPosition[PositionIndex.lThighBend.Int()];
                 case CMUPartIdx.Left_Shin:
@@ -54,8 +54,8 @@ namespace Pose {
                     return vNectFrame.JointPosition[PositionIndex.lFoot.Int()];
                 case CMUPartIdx.lToe:
                     return vNectFrame.JointPosition[PositionIndex.lToe.Int()];
-                case CMUPartIdx.rButtock:
-                    return vNectFrame.JointPosition[PositionIndex.hip.Int()];
+                // case CMUPartIdx.rButtock:
+                //     return vNectFrame.JointPosition[PositionIndex.hip.Int()];
                 case CMUPartIdx.Right_Thigh:
                     return vNectFrame.JointPosition[PositionIndex.rThighBend.Int()];
                 case CMUPartIdx.Right_Shin:
@@ -64,21 +64,21 @@ namespace Pose {
                     return vNectFrame.JointPosition[PositionIndex.rFoot.Int()];
                 case CMUPartIdx.rToe:
                     return vNectFrame.JointPosition[PositionIndex.rToe.Int()];
-                case CMUPartIdx.Waist:
-                    return vNectFrame.JointPosition[PositionIndex.hip.Int()];
+                // case CMUPartIdx.Waist:
+                //     return vNectFrame.JointPosition[PositionIndex.hip.Int()];
                 case CMUPartIdx.Abdomen:
                     return vNectFrame.JointPosition[PositionIndex.abdomenUpper.Int()];
                 case CMUPartIdx.Chest:
                     return vNectFrame.JointPosition[PositionIndex.neck.Int()];
-                case CMUPartIdx.Neck:
-                    return vNectFrame.JointPosition[PositionIndex.neck.Int()];
+                // case CMUPartIdx.Neck:
+                //     return vNectFrame.JointPosition[PositionIndex.neck.Int()];
                 case CMUPartIdx.Neck1:
                     return (vNectFrame.JointPosition[PositionIndex.head.Int()]
                     + vNectFrame.JointPosition[PositionIndex.neck.Int()]) / 2;
                 case CMUPartIdx.Head:
                     return vNectFrame.JointPosition[PositionIndex.head.Int()];
-                case CMUPartIdx.Left_Collar:
-                    return vNectFrame.JointPosition[PositionIndex.neck.Int()];
+                // case CMUPartIdx.Left_Collar:
+                //     return vNectFrame.JointPosition[PositionIndex.neck.Int()];
                 case CMUPartIdx.Left_Shoulder:
                     return vNectFrame.JointPosition[PositionIndex.lShldrBend.Int()];
                 case CMUPartIdx.Left_Forearm:
@@ -91,8 +91,8 @@ namespace Pose {
                     return vNectFrame.JointPosition[PositionIndex.lMid1.Int()];
                 case CMUPartIdx.lThumb1:
                     return vNectFrame.JointPosition[PositionIndex.lHand.Int()];
-                case CMUPartIdx.Right_Collar:
-                    return vNectFrame.JointPosition[PositionIndex.neck.Int()];
+                // case CMUPartIdx.Right_Collar:
+                //     return vNectFrame.JointPosition[PositionIndex.neck.Int()];
                 case CMUPartIdx.Right_Shoulder:
                     return vNectFrame.JointPosition[PositionIndex.rShldrBend.Int()];
                 case CMUPartIdx.Right_Forearm:
