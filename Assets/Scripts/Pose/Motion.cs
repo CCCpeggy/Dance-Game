@@ -73,7 +73,7 @@ namespace Pose {
             motion.FrameCount = int.Parse(Utility.IterData.GetAndNext(ref bvhDataIter));
             Utility.IterData.CheckAndNext(ref bvhDataIter, "Frame");
             Utility.IterData.CheckAndNext(ref bvhDataIter, "Time:");
-            motion.FrameTime = float.Parse(Utility.IterData.GetAndNext(ref bvhDataIter));
+            motion.FrameTime = float.Parse(Utility.IterData.GetAndNext(ref bvhDataIter)) * 5;
             motion.MotionData = new List<Frame>();
             for (int i = 0; i < motion.FrameCount; i++)
             {

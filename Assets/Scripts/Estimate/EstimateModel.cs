@@ -25,6 +25,7 @@ public class EstimateModel : MonoBehaviour
     // Pose
     private GameObject poseGameObj;
     private Pose.Object poseObj;
+    public Pose.Object GroundTrouthObj;
 
     private void Update()
     {
@@ -91,16 +92,14 @@ public class EstimateModel : MonoBehaviour
         poseObj.Root = poseObj.Part[PositionIndex.hip.Int()];
         // Child Settings
         // Right Arm
-        poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.rShldrBend.Int()]);
+        poseObj.Part[PositionIndex.neck.Int()].AddChild(poseObj.Part[PositionIndex.rShldrBend.Int()]);
         poseObj.Part[PositionIndex.rShldrBend.Int()].AddChild(poseObj.Part[PositionIndex.rForearmBend.Int()]);
         poseObj.Part[PositionIndex.rForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.rHand.Int()]);
-        // poseObj.Part[PositionIndex.rForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.rShldrBend.Int()]);
 
         // Left Arm
-        poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.lShldrBend.Int()]);
+        poseObj.Part[PositionIndex.neck.Int()].AddChild(poseObj.Part[PositionIndex.lShldrBend.Int()]);
         poseObj.Part[PositionIndex.lShldrBend.Int()].AddChild(poseObj.Part[PositionIndex.lForearmBend.Int()]);
         poseObj.Part[PositionIndex.lForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.lHand.Int()]);
-        // poseObj.Part[PositionIndex.lForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.lShldrBend.Int()]);
 
         // Fase
 
@@ -109,104 +108,17 @@ public class EstimateModel : MonoBehaviour
         poseObj.Part[PositionIndex.rThighBend.Int()].AddChild(poseObj.Part[PositionIndex.rShin.Int()]);
         poseObj.Part[PositionIndex.rShin.Int()].AddChild(poseObj.Part[PositionIndex.rFoot.Int()]);
         poseObj.Part[PositionIndex.rFoot.Int()].AddChild(poseObj.Part[PositionIndex.rToe.Int()]);
-        // poseObj.Part[PositionIndex.rFoot.Int()].AddChild(poseObj.Part[PositionIndex.rShin.Int()]);
 
         // Left Leg
         poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.lThighBend.Int()]);
         poseObj.Part[PositionIndex.lThighBend.Int()].AddChild(poseObj.Part[PositionIndex.lShin.Int()]);
         poseObj.Part[PositionIndex.lShin.Int()].AddChild(poseObj.Part[PositionIndex.lFoot.Int()]);
         poseObj.Part[PositionIndex.lFoot.Int()].AddChild(poseObj.Part[PositionIndex.lToe.Int()]);
-        // poseObj.Part[PositionIndex.lFoot.Int()].AddChild(poseObj.Part[PositionIndex.lShin.Int()]);
 
         // etc
         poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.spine.Int()]);
         poseObj.Part[PositionIndex.spine.Int()].AddChild(poseObj.Part[PositionIndex.neck.Int()]);
         poseObj.Part[PositionIndex.neck.Int()].AddChild(poseObj.Part[PositionIndex.head.Int()]);
-        //jointPoints[PositionIndex.head.Int()].Child = jointPoints[PositionIndex.Nose.Int()];
-
-        // useSkeleton = ShowSkeleton;
-        // if (useSkeleton)
-        // {
-        //     // Line Child Settings
-        //     // Right Arm
-        //     AddSkeleton(PositionIndex.rShldrBend, PositionIndex.rForearmBend);
-        //     AddSkeleton(PositionIndex.rForearmBend, PositionIndex.rHand);
-        //     AddSkeleton(PositionIndex.rHand, PositionIndex.rThumb2);
-        //     AddSkeleton(PositionIndex.rHand, PositionIndex.rMid1);
-
-        //     // Left Arm
-        //     AddSkeleton(PositionIndex.lShldrBend, PositionIndex.lForearmBend);
-        //     AddSkeleton(PositionIndex.lForearmBend, PositionIndex.lHand);
-        //     AddSkeleton(PositionIndex.lHand, PositionIndex.lThumb2);
-        //     AddSkeleton(PositionIndex.lHand, PositionIndex.lMid1);
-
-        //     // Fase
-        //     AddSkeleton(PositionIndex.lEar, PositionIndex.Nose);
-        //     AddSkeleton(PositionIndex.rEar, PositionIndex.Nose);
-
-        //     // Right Leg
-        //     AddSkeleton(PositionIndex.rThighBend, PositionIndex.rShin);
-        //     AddSkeleton(PositionIndex.rShin, PositionIndex.rFoot);
-        //     AddSkeleton(PositionIndex.rFoot, PositionIndex.rToe);
-
-        //     // Left Leg
-        //     AddSkeleton(PositionIndex.lThighBend, PositionIndex.lShin);
-        //     AddSkeleton(PositionIndex.lShin, PositionIndex.lFoot);
-        //     AddSkeleton(PositionIndex.lFoot, PositionIndex.lToe);
-
-        //     // etc
-        //     AddSkeleton(PositionIndex.spine, PositionIndex.neck);
-        //     AddSkeleton(PositionIndex.neck, PositionIndex.head);
-        //     AddSkeleton(PositionIndex.head, PositionIndex.Nose);
-        //     AddSkeleton(PositionIndex.neck, PositionIndex.rShldrBend);
-        //     AddSkeleton(PositionIndex.neck, PositionIndex.lShldrBend);
-        //     AddSkeleton(PositionIndex.rThighBend, PositionIndex.rShldrBend);
-        //     AddSkeleton(PositionIndex.lThighBend, PositionIndex.lShldrBend);
-        //     AddSkeleton(PositionIndex.rShldrBend, PositionIndex.abdomenUpper);
-        //     AddSkeleton(PositionIndex.lShldrBend, PositionIndex.abdomenUpper);
-        //     AddSkeleton(PositionIndex.rThighBend, PositionIndex.abdomenUpper);
-        //     AddSkeleton(PositionIndex.lThighBend, PositionIndex.abdomenUpper);
-        //     AddSkeleton(PositionIndex.lThighBend, PositionIndex.rThighBend);
-        // }
-
-        // Set Inverse
-        // var forward = TriangleNormal(jointPoints[PositionIndex.hip.Int()].Transform.position, jointPoints[PositionIndex.lThighBend.Int()].Transform.position, jointPoints[PositionIndex.rThighBend.Int()].Transform.position);
-        // foreach (var jointPoint in jointPoints)
-        // {
-        //     if (jointPoint.Transform != null)
-        //     {
-        //         jointPoint.InitRotation = jointPoint.Transform.rotation;
-        //     }
-
-        //     if (jointPoint.Child != null)
-        //     {
-        //         jointPoint.Inverse = GetInverse(jointPoint, jointPoint.Child, forward);
-        //         jointPoint.InverseRotation = jointPoint.Inverse * jointPoint.InitRotation;
-        //     }
-        // }
-        // var hip = jointPoints[PositionIndex.hip.Int()];
-        // initPosition = jointPoints[PositionIndex.hip.Int()].Transform.position;
-        // hip.Inverse = Quaternion.Inverse(Quaternion.LookRotation(forward));
-        // hip.InverseRotation = hip.Inverse * hip.InitRotation;
-
-        // // For Head Rotation
-        // var head = jointPoints[PositionIndex.head.Int()];
-        // head.InitRotation = jointPoints[PositionIndex.head.Int()].Transform.rotation;
-        // var gaze = jointPoints[PositionIndex.Nose.Int()].Transform.position - jointPoints[PositionIndex.head.Int()].Transform.position;
-        // head.Inverse = Quaternion.Inverse(Quaternion.LookRotation(gaze));
-        // head.InverseRotation = head.Inverse * head.InitRotation;
-        
-        // var lHand = jointPoints[PositionIndex.lHand.Int()];
-        // var lf = TriangleNormal(lHand.Pos3D, jointPoints[PositionIndex.lMid1.Int()].Pos3D, jointPoints[PositionIndex.lThumb2.Int()].Pos3D);
-        // lHand.InitRotation = lHand.Transform.rotation;
-        // lHand.Inverse = Quaternion.Inverse(Quaternion.LookRotation(jointPoints[PositionIndex.lThumb2.Int()].Transform.position - jointPoints[PositionIndex.lMid1.Int()].Transform.position, lf));
-        // lHand.InverseRotation = lHand.Inverse * lHand.InitRotation;
-
-        // var rHand = jointPoints[PositionIndex.rHand.Int()];
-        // var rf = TriangleNormal(rHand.Pos3D, jointPoints[PositionIndex.rThumb2.Int()].Pos3D, jointPoints[PositionIndex.rMid1.Int()].Pos3D);
-        // rHand.InitRotation = jointPoints[PositionIndex.rHand.Int()].Transform.rotation;
-        // rHand.Inverse = Quaternion.Inverse(Quaternion.LookRotation(jointPoints[PositionIndex.rThumb2.Int()].Transform.position - jointPoints[PositionIndex.rMid1.Int()].Transform.position, rf));
-        // rHand.InverseRotation = rHand.Inverse * rHand.InitRotation;
 
         jointPoints[PositionIndex.hip.Int()].score3D = 1f;
         jointPoints[PositionIndex.neck.Int()].score3D = 1f;
@@ -292,6 +204,9 @@ public class EstimateModel : MonoBehaviour
             poseObj.Status = Pose.Object.StatusType.Playing;
             var cmuPose = Pose.VNectToCMU.Convert(poseObj);
             cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            poseObj.gameObject.SetActive(false);
+            var motion1 = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true);
+            new Pose.TimeWarping(cmuPose, motion1.GetComponent<Pose.Object>());
         }
     }
     public void PoseRecordStart() {

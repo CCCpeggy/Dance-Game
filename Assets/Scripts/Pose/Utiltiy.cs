@@ -16,51 +16,6 @@ namespace Pose
             if (value >= max) return max;
             return value;
         }
-        public static int GetPartIdxByName(string name)
-        {
-
-            switch (name)
-            {
-                case "Hips":
-                    return 0;
-                case "Chest":
-                    return 1;
-                case "Neck":
-                    return 2;
-                case "Head":
-                    return 3;
-                case "LeftCollar":
-                    return 4;
-                case "LeftUpArm":
-                    return 5;
-                case "LeftLowArm":
-                    return 6;
-                case "LeftHand":
-                    return 7;
-                case "RightCollar":
-                    return 8;
-                case "RightUpArm":
-                    return 9;
-                case "RightLowArm":
-                    return 10;
-                case "RightHand":
-                    return 11;
-                case "LeftUpLeg":
-                    return 12;
-                case "LeftLowLeg":
-                    return 13;
-                case "LeftFoot":
-                    return 14;
-                case "RightUpLeg":
-                    return 15;
-                case "RightLowLeg":
-                    return 16;
-                case "RightFoot":
-                    return 17;
-                default:
-                    return -1;
-            }
-        }
         public static IEnumerable<string> SplitString(string data)
         {
             var components = data.Split((char[])null, System.StringSplitOptions.RemoveEmptyEntries);
