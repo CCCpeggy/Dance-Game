@@ -19,6 +19,15 @@ namespace Pose {
             }
             return newPart;
         }
+        // public PartObject CreatePartObject(Object belongObj, int partIdx, Vector3 offset) {
+        //     PartObject newPart = PartObject.CreateGameObject(name, parentObject, belongObj);
+        //     newPart.PartIdx = partIdx;
+        //     newPart.Offset = offset;
+        //     foreach(var child in Child) {
+        //         child.Clone(belongObj, newPart);
+        //     }
+        //     return newPart;
+        // }
 
         public static PartObject ReadPart(ref IEnumerator<string> bvhDataIter, Object obj, PartObject parentObject=null) {
             List<string> partNameList = new List<string>();
@@ -107,11 +116,6 @@ namespace Pose {
             obj.PoseObj = poseObj;
             if (parentObject){
                 parentObject.AddChild(obj);
-                LineRenderer lr = gobj.AddComponent<LineRenderer>();
-                lr.startWidth = 0.5f;
-                lr.endWidth = 0.5f;
-                lr.SetPosition(0, obj.gameObject.transform.position);
-                lr.SetPosition(1, parentObject.gameObject.transform.position);
                 // Ellipsoids.CreateEllipsoid(obj.gameObject, parentObject.gameObject);
             }
             return obj;
@@ -120,11 +124,27 @@ namespace Pose {
             Child.Add(childObj);
             childObj.Parent = this;
             childObj.transform.parent = transform;
+            LineRenderer lr = childObj.gameObject.AddComponent<LineRenderer>();
+            lr.startWidth = 0.05f;
+            lr.endWidth = 0.05f;
+            lr.SetPosition(0, childObj.gameObject.transform.position);
+            lr.SetPosition(1, gameObject.transform.position);
         }
     
         public void UpdateSingleLine(){
             LineRenderer lr = GetComponent<LineRenderer>();
             if (lr) {
+                lr.SetPosition(0, gameObject.transform.position);
+                lr.SetPosition(1, Parent.gameObject.transform.position);
+
+                // Ellipsoids.drawEllipsoids(Parent.gameObject.transform.position, gameObject.transform.position, lr);
+                // Ellipsoids_Sphere.setEllipsoid(Parent.gameObject.transform.position, gameObject.transform.position);
+            }
+        }
+        void Update()
+        {
+            LineRenderer lr = GetComponent<LineRenderer>();
+            if (lr && Parent) {
                 lr.SetPosition(0, gameObject.transform.position);
                 lr.SetPosition(1, Parent.gameObject.transform.position);
 

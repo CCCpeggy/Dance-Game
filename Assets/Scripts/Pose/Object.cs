@@ -11,6 +11,12 @@ namespace Pose {
         public Motion Motion;
         public List<Tuple<PartObject, int>> ChannelDatas = new List<Tuple<PartObject, int>>();
         public PartObject[] Part;
+        public enum StatusType {
+            None,
+            Recording,
+            Playing
+        }
+        public StatusType Status;
         public static GameObject CreatePoseObjByBVH(string filename, bool isTPoseType=false) {
             GameObject gameObject = new GameObject();
             var filenameArr = filename.Split('\\');
@@ -18,11 +24,25 @@ namespace Pose {
             var poseObject = gameObject.AddComponent<Object>();
             string bvhStrData = System.IO.File.ReadAllText(filename);
             poseObject.Read(bvhStrData, isTPoseType);
+            poseObject.Status = StatusType.Playing;
+            return gameObject;
+        }
+        public static GameObject CreatePoseObj() {
+            GameObject gameObject = new GameObject();
+            gameObject.name = "pose";
+            var poseObject = gameObject.AddComponent<Object>();
+            poseObject.Part = new PartObject[PositionIndex.Count.Int()];
+            for (int i = 0; i < PositionIndex.Count.Int(); i++) {
+                poseObject.Part[i] = PartObject.CreateGameObject("joint"+i, null, poseObject);
+            }
+            poseObject.Status = StatusType.None;
+            poseObject.Motion = Motion.Create(poseObject);
             return gameObject;
         }
         public Object Clone(bool isMotion=true){
             GameObject newObj = new GameObject();
             var newPose = newObj.AddComponent<Object>();
+            newPose.Status = Status;
             newPose.Root = Root.Clone(newPose);
             newPose.Root.transform.parent = newObj.transform;
             newPose.RenamePartCMU();
@@ -163,7 +183,7 @@ namespace Pose {
             }
         }
         
-         public void RenamePartCMU() {
+        public void RenamePartCMU() {
             Part = new PartObject[31];
             List<PartObject> bfs = new List<PartObject>();
             bfs.Add(Root);
@@ -171,7 +191,7 @@ namespace Pose {
             while (queueIdx < bfs.Count) {
                 var cur = bfs[queueIdx++];
                 if (cur.name == "End") continue;
-                int idx = Pose.Utility.CMUMotion.GetPartIdxByNameCMU(cur.name);
+                int idx = Pose.Utility.GetPartIdxByCMUName(cur.name);
                 if (idx >= 0) {
                     Part[idx] = cur;
                     cur.PartIdx = idx;
@@ -186,12 +206,22 @@ namespace Pose {
             }
         }
 
-        void Update()
+        void LateUpdate()
         {
-            if(Root && gameObject.activeSelf){
-                ApplyFrame(Time.time / 5);
+            switch(Status) {
+                case StatusType.None:
+                    break;
+                case StatusType.Recording:
+                    Motion.Record();
+                    break;
+                case StatusType.Playing:
+                    if(Root && gameObject.activeSelf){
+                        ApplyFrame(Time.time);
+                    }
+                    break;
             }
         }
+
 
     }
 

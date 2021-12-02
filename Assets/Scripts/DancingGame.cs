@@ -7,9 +7,9 @@ public class DancingGame : MonoBehaviour
     public List<Pose.Object> PoseObjects = new List<Pose.Object>();
     void Start() {
         PoseObjects.Clear();
-        var motion1 = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true);
-        var motion2 = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_04b.bvh", true);
-        new Pose.TimeWarping(motion1.GetComponent<Pose.Object>(), motion2.GetComponent<Pose.Object>()).Do();
+        //var motion1 = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true);
+        //var motion2 = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_04b.bvh", true);
+        //new Pose.TimeWarping(motion1.GetComponent<Pose.Object>(), motion2.GetComponent<Pose.Object>()).Do();
     }
 }
 
