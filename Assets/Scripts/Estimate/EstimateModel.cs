@@ -204,7 +204,9 @@ public class EstimateModel : MonoBehaviour
             poseObj.Status = Pose.Object.StatusType.Playing;
             var cmuPose = Pose.VNectToCMU.Convert(poseObj);
             cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            poseObj.gameObject.SetActive(false);
+            cmuPose.Motion.ToRotationType();
+            // poseObj.gameObject.SetActive(false);
+            GameObject.Destroy(poseObj);
             var motion1 = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true);
             new Pose.TimeWarping(cmuPose, motion1.GetComponent<Pose.Object>());
         }
