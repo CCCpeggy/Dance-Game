@@ -18,6 +18,7 @@ namespace Pose {
                 CMUPartIdx parentIdx = cmuPart.GetParent();
                 PartObject parentObj = parentIdx != CMUPartIdx.None ? cmuPose.Part[parentIdx.Int()] : null;
                 cmuPose.Part[i] = PartObject.CreateGameObject(partObjName, parentObj, cmuPose);
+                cmuPose.Part[i].PartIdx = i;
             }
             cmuPose.Root = cmuPose.Part[CMUPartIdx.Hip.Int()];
             cmuPose.Root.transform.parent = cmuObj.transform;

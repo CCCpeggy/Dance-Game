@@ -34,6 +34,7 @@ namespace Pose {
             poseObject.Part = new PartObject[PositionIndex.Count.Int()];
             for (int i = 0; i < PositionIndex.Count.Int(); i++) {
                 poseObject.Part[i] = PartObject.CreateGameObject("joint"+i, null, poseObject);
+                poseObject.Part[i].PartIdx = i;
             }
             poseObject.Status = StatusType.None;
             poseObject.Motion = Motion.Create(poseObject);
@@ -86,103 +87,6 @@ namespace Pose {
             Motion.ApplyFrame(frame);
         }
 
-        public void RenamePart() {
-            Part = new PartObject[] {
-                null, null, null, null, null, null, null, null, null, 
-                null, null, null, null, null, null, null, null, null
-            };
-            Root.name = "Hips";
-            Part[0] = Root;
-            bool chest = false, leftLeg = false, rightLeg = false;
-            Assert.IsTrue(Root.Child.Count == 3);
-            foreach(var part in Root.Child) {
-                if (!chest && part.Offset.y > 0 && part.Offset.x <= 0){
-                    chest = true;
-                    part.name = "Chest";
-                    Part[1] = part;
-                    Assert.IsTrue(part.Child.Count == 3);
-                    bool leftCollar = false, rightCollar = false, neck = false;
-                    foreach(var part2 in part.Child) {
-                        if (!neck && part2.Offset.x == 0 ) {
-                            neck = true;
-                            part2.name = "Neck";
-                            Part[2] = part2;
-                            Assert.IsTrue(part2.Child.Count == 1);
-                            part2.Child[0].name = "Head";
-                            Part[3] = part2.Child[0];
-                            Assert.IsTrue(part2.Child[0].Child.Count == 1);
-                            Assert.IsTrue(part2.Child[0].Child[0].name == "End");
-                        }
-                        else if (!leftCollar && part2.Offset.x > 0){
-                            leftCollar = true;
-                            part2.name = "LeftCollar";
-                            Part[4] = part2;
-                            Assert.IsTrue(part2.Child.Count == 1);
-                            part2.Child[0].name = "LeftUpArm";
-                            Part[5] = part2.Child[0];
-                            Assert.IsTrue(part2.Child[0].Child.Count == 1);
-                            part2.Child[0].Child[0].name = "LeftLowArm";
-                            Part[6] = part2.Child[0].Child[0];
-                            Assert.IsTrue(part2.Child[0].Child[0].Child.Count == 1);
-                            part2.Child[0].Child[0].Child[0].name = "LeftHand";
-                            Part[7] = part2.Child[0].Child[0].Child[0];
-                            Assert.IsTrue(part2.Child[0].Child[0].Child[0].Child.Count == 1);
-                            Assert.IsTrue(part2.Child[0].Child[0].Child[0].Child[0].name == "End");
-                        }
-                        else if (!rightCollar && part2.Offset.x < 0){
-                            rightCollar = true;
-                            part2.name = "RightCollar";
-                            Part[8] = part2;
-                            Assert.IsTrue(part2.Child.Count == 1);
-                            part2.Child[0].name = "RightUpArm";
-                            Part[9] = part2.Child[0];
-                            Assert.IsTrue(part2.Child[0].Child.Count == 1);
-                            part2.Child[0].Child[0].name = "RightLowArm";
-                            Part[10] = part2.Child[0].Child[0];
-                            Assert.IsTrue(part2.Child[0].Child[0].Child.Count == 1);
-                            part2.Child[0].Child[0].Child[0].name = "RightHand";
-                            Part[11] = part2.Child[0].Child[0].Child[0];
-                            Assert.IsTrue(part2.Child[0].Child[0].Child[0].Child.Count == 1);
-                            Assert.IsTrue(part2.Child[0].Child[0].Child[0].Child[0].name == "End");
-                        }
-                        else{
-                            Assert.IsTrue(false);
-                        }
-                    }
-                }
-                else if (!leftLeg && part.Offset.x > 0){
-                    leftLeg = true;
-                    part.name = "LeftUpLeg";
-                    Part[12] = part;
-                    Assert.IsTrue(part.Child.Count == 1);
-                    part.Child[0].name = "LeftLowLeg";
-                    Part[13] = part.Child[0];
-                    Assert.IsTrue(part.Child[0].Child.Count == 1);
-                    part.Child[0].Child[0].name = "LeftFoot";
-                    Part[14] = part.Child[0].Child[0];
-                    Assert.IsTrue(part.Child[0].Child[0].Child.Count == 1);
-                    Assert.IsTrue(part.Child[0].Child[0].Child[0].name == "End");
-                }
-                else if (!rightLeg && part.Offset.x < 0){
-                    rightLeg = true;
-                    part.name = "RightUpLeg";
-                    Part[15] = part;
-                    Assert.IsTrue(part.Child.Count == 1);
-                    part.Child[0].name = "RightLowLeg";
-                    Part[16] = part.Child[0];
-                    Assert.IsTrue(part.Child[0].Child.Count == 1);
-                    part.Child[0].Child[0].name = "RightFoot";
-                    Part[17] = part.Child[0].Child[0];
-                    Assert.IsTrue(part.Child[0].Child[0].Child.Count == 1);
-                    Assert.IsTrue(part.Child[0].Child[0].Child[0].name == "End");
-                }
-                else{
-                    Debug.LogError(part.name + "沒有找到對應的部位");
-                    Assert.IsTrue(false);
-                }
-            }
-        }
-        
         public void RenamePartCMU() {
             Part = new PartObject[31];
             List<PartObject> bfs = new List<PartObject>();
