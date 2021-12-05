@@ -73,7 +73,6 @@ namespace Pose
                     if (maxLenI >= 0) {
                         var maxLenTwData = twTable[maxLenI, maxLenJ];
                         double maxLenAvgDis = maxLenTwData.SumDistance / maxLenTwData.Length;
-                        Debug.Log(maxLenTwData.SumDistance + ", " + maxLenTwData.Length);
                         if (!isLess(twData.Distance, maxLenAvgDis * 2)) continue;
                     }
                     twTable[i, j] = twData;
@@ -192,11 +191,9 @@ namespace Pose
         {
             List<Tuple<int, int>> tmpWarping = new List<Tuple<int, int>>();
             int i = endIFrame, j = endJFrame;
-            Debug.Log("end: " + endIFrame + ", " + endJFrame);
             while (i >= 0 && j >= 0)
             {
                 tmpWarping.Add(new Tuple<int, int>(i, j));
-                Debug.Log(i + ", " + j);
                 var tmp_timewarp = twTable[i, j];
                 i = tmp_timewarp.PreviousI;
                 j = tmp_timewarp.PreviousJ;
@@ -234,7 +231,6 @@ namespace Pose
                 }
             }
             basicObj.Motion.MotionData = basicObj.Motion.MotionData.GetRange(startFrameIdx, lastFrameIdx - startFrameIdx);
-            Debug.Log(basicObj.Motion.MotionData.Count + ", " + refObj.Motion.MotionData.Count);
             basicObj.Motion.FrameCount = refObj.Motion.FrameCount = lastFrameIdx - startFrameIdx;
             refObj.Motion.FrameTime = basicObj.Motion.FrameTime;
         }
