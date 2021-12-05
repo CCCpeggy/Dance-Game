@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Position index of joint points
@@ -26,6 +27,7 @@ public class EstimateModel : MonoBehaviour
     private GameObject poseGameObj;
     private Pose.Object poseObj;
     public Pose.Object GroundTrouthObj;
+    public Text ScoreText;
 
     private void Update()
     {
@@ -217,7 +219,9 @@ public class EstimateModel : MonoBehaviour
             retargetedRefPose.name = "標準 motion";
             retargetedRefPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             double score = bindPart.GetGrade();
-            Debug.Log(score);
+            ScoreText.gameObject.SetActive(true);
+            ScoreText.text = "Score: " + score.ToString("0");
+
             GameObject.Destroy(poseObj.gameObject);
             GameObject.Destroy(refPose.gameObject);
         }
