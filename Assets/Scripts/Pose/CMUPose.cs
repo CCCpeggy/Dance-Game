@@ -44,6 +44,24 @@ namespace Pose
         {
             return (int)i;
         }
+        public static float GetWeight(this CMUPartIdx i) {
+            switch((CMUPartIdx) i){
+                case CMUPartIdx.lToe:
+                case CMUPartIdx.LFingers:
+                case CMUPartIdx.LeftFingerBase:
+                case CMUPartIdx.lThumb1:
+                case CMUPartIdx.rToe:
+                case CMUPartIdx.RFingers:
+                case CMUPartIdx.RightFingerBase:
+                case CMUPartIdx.rThumb1:
+                case CMUPartIdx.Hip:
+                case CMUPartIdx.Abdomen:
+                case CMUPartIdx.Chest:
+                    return 0;
+                default:
+                    return 1/20.0f;
+            }
+        }
         public static string GetName(this CMUPartIdx i)
         {
             return System.Enum.GetName(typeof(CMUPartIdx), i);

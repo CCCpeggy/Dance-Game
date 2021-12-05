@@ -91,7 +91,7 @@ namespace Pose {
         }
         public void ToRotationType() {
             // PoseObj.Status = Object.StatusType.None;
-            ApplyFrame(MotionData[0]);
+            ApplyFrame(MotionData[PoseObj.Motion.FrameCount / 2]);
             for (int i = 1; i < PoseObj.Part.Length; i++) {
                 PoseObj.Part[i].Offset = PoseObj.Part[i].transform.localPosition;
             }

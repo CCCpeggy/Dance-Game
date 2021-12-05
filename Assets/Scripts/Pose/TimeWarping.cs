@@ -73,8 +73,7 @@ namespace Pose
                     if (maxLenI >= 0) {
                         var maxLenTwData = twTable[maxLenI, maxLenJ];
                         double maxLenAvgDis = maxLenTwData.SumDistance / maxLenTwData.Length;
-                        // Debug.Log(maxLenTwData.SumDistance + ", " + maxLenTwData.Length);
-                        Debug.Log(twData.Distance + ", " + maxLenAvgDis * 2);
+                        Debug.Log(maxLenTwData.SumDistance + ", " + maxLenTwData.Length);
                         if (!isLess(twData.Distance, maxLenAvgDis * 2)) continue;
                     }
                     twTable[i, j] = twData;
@@ -86,8 +85,8 @@ namespace Pose
                     double leftupAvgDis = leftup != null ? (leftup.SumDistance / leftup.Length) : -1;
 
                     // 限制斜率
-                    if (left != null && left.ContinuesJ >= 3) leftAvgDis = -1;
-                    if (up != null && up.ContinuesJ >= 3) upAvgDis = -1;
+                    if (left != null && left.ContinuesJ >= 2) leftAvgDis = -1;
+                    if (up != null && up.ContinuesI >= 2) upAvgDis = -1;
 
                     if (isLess(leftupAvgDis, upAvgDis) && isLess(leftupAvgDis, leftAvgDis))
                     {
@@ -149,16 +148,17 @@ namespace Pose
             int partLen = o1.Part.Length;
             float tan11 = 0, tan12 = 0, tan21 = 0, tan22 = 0;
             float x1 = 0, x2 = 0, z1 = 0, z2 = 0;
-            float w = (float)1.0 / partLen / 5;
             Vector3[] vi1 = new Vector3[partLen], vi2 = new Vector3[partLen];
             for (int i = 0; i < 5; i++)
             {
-                int o1IdxPlusI = Utility.Clip(o1Idx + i - 2, 0, o1.Motion.FrameCount - 1);
-                int o2IdxPlusI = Utility.Clip(o2Idx + i - 2, 0, o2.Motion.FrameCount - 1);
-                o1.ApplyFrameByIdx(o1IdxPlusI);
-                o2.ApplyFrameByIdx(o2IdxPlusI);
+                float offsetTime = (i - 2) * 0.1f;
+                float o1IdxPlusI = Utility.Clip(o1Idx * o1.Motion.FrameTime + offsetTime, 0, o1.Motion.FrameCount - 1);
+                float o2IdxPlusI = Utility.Clip(o2Idx * o2.Motion.FrameTime + offsetTime, 0, o2.Motion.FrameCount - 1);
+                o1.ApplyFrame(o1IdxPlusI);
+                o2.ApplyFrame(o2IdxPlusI);
                 for (int j = 0; j < partLen; j++)
                 {
+                    float w = ((Pose.CMUPartIdx)j).GetWeight();
                     Vector3 v1 = o1.Part[i].transform.position;
                     Vector3 v2 = o2.Part[i].transform.position;
                     if (i == 2)
@@ -224,17 +224,18 @@ namespace Pose
         }
         private void refToBasic() {
             refObj.Motion.MotionData.Clear();
+            int startFrameIdx = -1;
+            int lastFrameIdx = -1;
             for (int i = 0; i < basicObj.Motion.FrameCount; i++) {
-                float lastFrameIdx = 0;
-                if (Warping[i] >= 0 && Warping[i] <= tmpRefObj.Motion.FrameCount) {
-                    refObj.Motion.MotionData.Add(tmpRefObj.Motion.getFrame(Warping[i]));
-                    lastFrameIdx = Warping[i];
-                }
-                else {
-                    refObj.Motion.MotionData.Add(tmpRefObj.Motion.getFrame(lastFrameIdx));
+                if (Warping[i] >= 0 && Warping[i] <= tmpRefObj.Motion.FrameCount - 1) {
+                    lastFrameIdx = i;
+                    if (startFrameIdx < 0) startFrameIdx = i;
+                    else refObj.Motion.MotionData.Add(tmpRefObj.Motion.getFrame(Warping[i]));
                 }
             }
-            refObj.Motion.FrameCount = refObj.Motion.MotionData.Count;
+            basicObj.Motion.MotionData = basicObj.Motion.MotionData.GetRange(startFrameIdx, lastFrameIdx - startFrameIdx);
+            Debug.Log(basicObj.Motion.MotionData.Count + ", " + refObj.Motion.MotionData.Count);
+            basicObj.Motion.FrameCount = refObj.Motion.FrameCount = lastFrameIdx - startFrameIdx;
             refObj.Motion.FrameTime = basicObj.Motion.FrameTime;
         }
     }

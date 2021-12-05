@@ -16,6 +16,12 @@ namespace Pose
             if (value >= max) return max;
             return value;
         }
+        public static float Clip(float value, float min, float max)
+        {
+            if (value <= min) return min;
+            if (value >= max) return max;
+            return value;
+        }
         public static IEnumerable<string> SplitString(string data)
         {
             var components = data.Split((char[])null, System.StringSplitOptions.RemoveEmptyEntries);
