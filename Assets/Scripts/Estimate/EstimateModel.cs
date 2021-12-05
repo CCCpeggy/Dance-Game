@@ -205,10 +205,20 @@ public class EstimateModel : MonoBehaviour
             var cmuPose = Pose.VNectToCMU.Convert(poseObj);
             cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             cmuPose.Motion.ToRotationType();
+            cmuPose.name = "錄製 motioin";
             // poseObj.gameObject.SetActive(false);
             GameObject.Destroy(poseObj);
-            var motion1 = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true);
-            new Pose.TimeWarping(cmuPose, motion1.GetComponent<Pose.Object>());
+            var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true).GetComponent<Pose.Object>();
+            refPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            new Pose.TimeWarping(cmuPose, refPose).Do();
+            BindPart bindPart = new BindPart(cmuPose, refPose);
+            bindPart.Set(BindPart.Part.LeftLeg);
+            var retargetedRefPose = bindPart.Get();
+            retargetedRefPose.name = "標準 motion";
+            retargetedRefPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            double score = bindPart.GetGrade();
+            GameObject.Destroy(refPose);
+            Debug.Log(score);
         }
     }
     public void PoseRecordStart() {

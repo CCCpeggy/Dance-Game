@@ -70,44 +70,50 @@ namespace Pose
                 for (int j = jStart; j <= jEnd; j++)
                 {
                     var twData = Distance(tmpBasicObj, tmpRefObj, i, j);
-                    if (!isLess(twData.Distance, 5)) continue;
+                    if (maxLenI >= 0) {
+                        var maxLenTwData = twTable[maxLenI, maxLenJ];
+                        double maxLenAvgDis = maxLenTwData.SumDistance / maxLenTwData.Length;
+                        // Debug.Log(maxLenTwData.SumDistance + ", " + maxLenTwData.Length);
+                        Debug.Log(twData.Distance + ", " + maxLenAvgDis * 2);
+                        if (!isLess(twData.Distance, maxLenAvgDis * 2)) continue;
+                    }
                     twTable[i, j] = twData;
                     Data left = j > 0 ? twTable[i, j - 1] : null;
                     Data up = i > 0 ? twTable[i - 1, j] : null;
                     Data leftup = i > 0 && j > 0 ? twTable[i - 1, j - 1] : null;
-                    double leftDis = left != null ? (left.SumDistance / left.Length) : -1;
-                    double upDis = up != null ? (up.SumDistance / up.Length) : -1;
-                    double leftupDis = leftup != null ? (leftup.SumDistance / leftup.Length) : -1;
+                    double leftAvgDis = left != null ? (left.SumDistance / left.Length) : -1;
+                    double upAvgDis = up != null ? (up.SumDistance / up.Length) : -1;
+                    double leftupAvgDis = leftup != null ? (leftup.SumDistance / leftup.Length) : -1;
 
                     // 限制斜率
-                    if (left != null && left.ContinuesJ >= 3) leftDis = -1;
-                    if (up != null && up.ContinuesJ >= 3) upDis = -1;
+                    if (left != null && left.ContinuesJ >= 3) leftAvgDis = -1;
+                    if (up != null && up.ContinuesJ >= 3) upAvgDis = -1;
 
-                    if (isLess(leftupDis, upDis) && isLess(leftupDis, leftDis))
+                    if (isLess(leftupAvgDis, upAvgDis) && isLess(leftupAvgDis, leftAvgDis))
                     {
                         twData.PreviousI = i - 1;
                         twData.PreviousJ = j - 1;
                         twData.ContinuesI = 0;
                         twData.ContinuesJ = 0;
-                        twData.SumDistance = leftupDis + twData.Distance;
+                        twData.SumDistance = leftup.SumDistance + twData.Distance;
                         twData.Length = leftup.Length + 1;
                     }
-                    else if (isLess(leftDis, upDis))
+                    else if (isLess(leftAvgDis, upAvgDis))
                     {
                         twData.PreviousI = i;
                         twData.PreviousJ = j - 1;
                         twData.ContinuesI = 0;
                         twData.ContinuesJ = left.ContinuesJ + 1;
-                        twData.SumDistance = leftDis + twData.Distance;
+                        twData.SumDistance = left.SumDistance + twData.Distance;
                         twData.Length = left.Length + 1;
                     }
-                    else if (isLess(upDis, -1))
+                    else if (isLess(upAvgDis, -1))
                     {
                         twData.PreviousI = i - 1;
                         twData.PreviousJ = j;
                         twData.ContinuesI = up.ContinuesI + 1;
                         twData.ContinuesJ = 0;
-                        twData.SumDistance = upDis + twData.Distance;
+                        twData.SumDistance = up.SumDistance + twData.Distance;
                         twData.Length = up.Length + 1;
                     }
                     // SumDistance 
@@ -186,9 +192,11 @@ namespace Pose
         {
             List<Tuple<int, int>> tmpWarping = new List<Tuple<int, int>>();
             int i = endIFrame, j = endJFrame;
+            Debug.Log("end: " + endIFrame + ", " + endJFrame);
             while (i >= 0 && j >= 0)
             {
                 tmpWarping.Add(new Tuple<int, int>(i, j));
+                Debug.Log(i + ", " + j);
                 var tmp_timewarp = twTable[i, j];
                 i = tmp_timewarp.PreviousI;
                 j = tmp_timewarp.PreviousJ;

@@ -112,7 +112,7 @@ namespace Pose {
                         PoseObj.Part[i].transform.localPosition = PoseObj.Part[i].Offset;
                         PoseObj.Part[i].Parent.transform.rotation = Quaternion.FromToRotation(fromPos, toPos);
                         frame.JointRotation[parentIdx] = PoseObj.Part[i].Parent.transform.localRotation;
-                        Debug.Log(fromPos + ", " + toPos + ", " + frame.JointRotation[parentIdx]);
+                        // Debug.Log(fromPos + ", " + toPos + ", " + frame.JointRotation[parentIdx]);
                     }
                 }
                 frame.type = Frame.JointType.Rotation;
