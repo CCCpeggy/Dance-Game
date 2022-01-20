@@ -222,7 +222,8 @@ public class BarracudaRunner : MonoBehaviour
         yield return new WaitForSeconds(WaitTimeModelLoad);
 
         // Init VideoCapture
-        videoCapture.Init(InputImageSize, InputImageSize);
+        while(!videoCapture.VideoPlayer.isPrepared) yield return null;
+        // videoCapture.Init(InputImageSize, InputImageSize);
         Lock = false;
     }
 

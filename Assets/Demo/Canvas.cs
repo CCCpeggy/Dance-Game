@@ -21,21 +21,19 @@ public class Canvas : MonoBehaviour
         VideoBtn.onClick.AddListener(ChooseVideo);
         MotionBtn.onClick.AddListener(ChooseMotion);
         DoneBtn.onClick.AddListener(Done);
-        VideoPlayer.url = "file://" + "D:/workplace/3D遊戲/P2/Dance Game/Assets/Videos/test.mp4";
-        VideoPlayer.Prepare();
-        StartCoroutine(CheckVideoPlayer());
     }
 
     IEnumerator CheckVideoPlayer()
     {
         while(!VideoPlayer.isPrepared) yield return null;
-        Debug.Log("init");
         VideoCapture.Init(448, 448);
+        VideoCapture.VideoPlayer.Pause();
     }
 
 
     void Update()
     {
+        DoneBtn.interactable = !string.IsNullOrEmpty(VideoPathField.text);
     }
 
     void ChooseVideo() {
@@ -49,7 +47,9 @@ public class Canvas : MonoBehaviour
     }
 
     void Done() {
-        // var refMotion = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true);
         VideoPlayer.url = "file://" + VideoPathField.text;
+        VideoPlayer.Prepare();
+        StartCoroutine(CheckVideoPlayer());
+        // var refMotion = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true);
     }
 }
