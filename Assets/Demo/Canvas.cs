@@ -23,16 +23,19 @@ public class Canvas : MonoBehaviour
         DoneBtn.onClick.AddListener(Done);
         VideoPlayer.url = "file://" + "D:/workplace/3D遊戲/P2/Dance Game/Assets/Videos/test.mp4";
         VideoPlayer.Prepare();
-        
-
+        StartCoroutine(CheckVideoPlayer());
     }
+
+    IEnumerator CheckVideoPlayer()
+    {
+        while(!VideoPlayer.isPrepared) yield return null;
+        Debug.Log("init");
+        VideoCapture.Init(448, 448);
+    }
+
 
     void Update()
     {
-        if (!bideoCaptureIsInit && VideoPlayer.isPrepared) {
-            bideoCaptureIsInit = true;
-            VideoCapture.Init(448, 448);
-        }
     }
 
     void ChooseVideo() {
