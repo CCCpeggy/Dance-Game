@@ -18,6 +18,8 @@ public class EstimateModel : MonoBehaviour
     public float SkeletonY;
     public float SkeletonZ;
     public float SkeletonScale;
+
+    public DancingGameDemo DancingGameDemo;
     
     // Joint position and bone
     private VNectModel.JointPoint[] jointPoints;
@@ -26,8 +28,6 @@ public class EstimateModel : MonoBehaviour
     // Pose
     private GameObject poseGameObj;
     private Pose.Object poseObj;
-    public Pose.Object GroundTrouthObj;
-    public Text ScoreText;
 
     private void Update()
     {
@@ -208,22 +208,10 @@ public class EstimateModel : MonoBehaviour
             cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             cmuPose.Motion.ToRotationType();
             cmuPose.name = "錄製 motioin";
-            var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true).GetComponent<Pose.Object>();
+            DancingGameDemo.BindRefAndRealPose(cmuPose);
+            // var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true).GetComponent<Pose.Object>();
             // var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\55b\55_10b.bvh", true).GetComponent<Pose.Object>();
-            refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
-            refPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            new Pose.TimeWarping(cmuPose, refPose).Do();
-            BindPart bindPart = new BindPart(cmuPose, refPose);
-            bindPart.Set(BindPart.Part.LeftLeg);
-            var retargetedRefPose = bindPart.Get();
-            retargetedRefPose.name = "標準 motion";
-            retargetedRefPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            double score = bindPart.GetGrade();
-            ScoreText.gameObject.SetActive(true);
-            ScoreText.text = "Score: " + score.ToString("0");
-
             GameObject.Destroy(poseObj.gameObject);
-            GameObject.Destroy(refPose.gameObject);
         }
     }
     public void PoseRecordStart() {
