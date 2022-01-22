@@ -68,13 +68,19 @@ public class DancingGameDemo : MonoBehaviour
         // EstimateModel.refPose = refPose;
     }
 
-    public void SetLineColor(Pose.Object pose, Material material)
+    public void SetLinesColor(Pose.Object pose, Material material)
     {
         for (int i = 0; i < pose.Part.Length; i++)
         {
-            var line = pose.Part[i].gameObject.GetComponent<LineRenderer>();
+            var line = pose.Part[i].GetComponent<LineRenderer>();
             if (line) line.material = material;
         }
+    }
+
+    public void SetPointsColor(Pose.Object pose, Material material)
+    {
+        for (int i = 0; i < pose.Part.Length; i++)
+            pose.Part[i].GetComponent<Renderer>().material = material;
     }
 
     public void BindRefAndRealPose(Pose.Object cmuPose)
@@ -84,17 +90,18 @@ public class DancingGameDemo : MonoBehaviour
         refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
         refPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         refPose.transform.position = new Vector3(3, 1, 0);
-        SetLineColor(refPose, NormalLineMaterial);
+        SetLinesColor(refPose, NormalLineMaterial);
+        SetPointsColor(refPose, NormalPointMaterial);
 
-        // new Pose.TimeWarping(cmuPose, refPose).Do();
-        // BindPart bindPart = new BindPart(cmuPose, refPose);
-        // bindPart.Set(BindPart.Part.LeftLeg);
-        // var retargetedRefPose = bindPart.Get();
-        // retargetedRefPose.name = "標準 motion";
-        // retargetedRefPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        // double score = bindPart.GetGrade();
-        // ScoreText.gameObject.SetActive(true);
-        // ScoreText.text = "分數: " + score.ToString("0") + " 分";
+        new Pose.TimeWarping(cmuPose, refPose).Do();
+        BindPart bindPart = new BindPart(cmuPose, refPose);
+        bindPart.Set(BindPart.Part.LeftLeg);
+        var retargetedRefPose = bindPart.Get();
+        retargetedRefPose.name = "標準 motion";
+        retargetedRefPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        double score = bindPart.GetGrade();
+        ScoreText.gameObject.SetActive(true);
+        ScoreText.text = "分數: " + score.ToString("0") + " 分";
         // GameObject.Destroy(refPose.gameObject);
     }
 }
