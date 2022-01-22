@@ -12,6 +12,7 @@ public class DancingGameDemo : MonoBehaviour
     public Button MotionBtn;
     public InputField MotionPathField;
     public Button DoneBtn;
+    public Button LeftHandBtn, RightHandBtn, LeftLegBtn, RightLegBtn;
     public Text ScoreText;
     public VideoCapture VideoCapture;
     public GameObject InitPanel, LoadPanel;
@@ -19,14 +20,22 @@ public class DancingGameDemo : MonoBehaviour
     public Material NormalLineMaterial;
     public Material ErrorLineMaterial;
     public Material CorrectLineMaterial;
-    // public EstimateModel EstimateModel;
+    private Pose.Object refPose, recordPose, demoRefPose, demoRecPose, retargetedRefPose;
 
     void Start()
     {
         VideoBtn.onClick.AddListener(ChooseVideo);
         MotionBtn.onClick.AddListener(ChooseMotion);
         DoneBtn.onClick.AddListener(Done);
-        InitPanel.SetActive(false);
+        LeftHandBtn.onClick.AddListener(delegate{SetAttentionPart(BindPart.Part.LeftHand);});
+        RightHandBtn.onClick.AddListener(delegate{SetAttentionPart(BindPart.Part.RightHand);});
+        LeftLegBtn.onClick.AddListener(delegate{SetAttentionPart(BindPart.Part.LeftLeg);});
+        RightLegBtn.onClick.AddListener(delegate{SetAttentionPart(BindPart.Part.RightLeg);});
+        LeftHandBtn.gameObject.SetActive(false);
+        RightHandBtn.gameObject.SetActive(false);
+        LeftLegBtn.gameObject.SetActive(false);
+        RightLegBtn.gameObject.SetActive(false);
+        InitPanel.SetActive(true);
         LoadPanel.SetActive(false);
         // var refPose = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true).GetComponent<Pose.Object>();
         // refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
@@ -64,6 +73,7 @@ public class DancingGameDemo : MonoBehaviour
     void Done()
     {
         VideoPathField.interactable = MotionPathField.interactable = VideoBtn.interactable = MotionBtn.interactable = false;
+        DoneBtn.interactable = false;
         VideoCapture.VideoPlayer.url = "file://" + VideoPathField.text;
         VideoCapture.VideoPlayer.Prepare();
         StartCoroutine(CheckVideoPlayer());
@@ -131,8 +141,14 @@ public class DancingGameDemo : MonoBehaviour
     }
 
 
-    public void BindRefAndRealPose(Pose.Object recordPose)
+    public void BindRefAndRealPose(Pose.Object _recordPose)
     {
+        LeftHandBtn.gameObject.SetActive(true);
+        RightHandBtn.gameObject.SetActive(true);
+        LeftLegBtn.gameObject.SetActive(true);
+        RightLegBtn.gameObject.SetActive(true);
+
+        recordPose = _recordPose;
         recordPose.name = "錄製 motioin";
         recordPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
         recordPose.transform.position = new Vector3(300, 0, 0);
@@ -141,13 +157,18 @@ public class DancingGameDemo : MonoBehaviour
 
 
         var refObj = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true);
-        var refPose = refObj.GetComponent<Pose.Object>();
+        refPose = refObj.GetComponent<Pose.Object>();
         refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
 
+        SetAttentionPart(BindPart.Part.LeftLeg);
+    }
+
+    private void SetAttentionPart(BindPart.Part part) {
         new Pose.TimeWarping(recordPose, refPose).Do();
         BindPart bindPart = new BindPart(recordPose, refPose);
-        bindPart.Set(BindPart.Part.LeftLeg);
-        var retargetedRefPose = bindPart.Get();
+        bindPart.Set(part);
+        if (retargetedRefPose != null) GameObject.Destroy(retargetedRefPose.gameObject);
+        retargetedRefPose = bindPart.Get();
         retargetedRefPose.name = "標準 motion";
         retargetedRefPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         double score = bindPart.GetGrade();
@@ -159,21 +180,22 @@ public class DancingGameDemo : MonoBehaviour
         SetLinesColor(retargetedRefPose, NormalLineMaterial);
         SetPointsColor(retargetedRefPose, NormalPointMaterial);
 
-        var newRefPose = retargetedRefPose.Clone();
-        newRefPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
-        newRefPose.transform.position = new Vector3(200, 0, 0);
-        SetLinesColor(newRefPose, NormalLineMaterial);
-        SetPointsColor(newRefPose, NormalPointMaterial);
-        SetPartLinesColor(newRefPose, BindPart.Part.LeftLeg, CorrectLineMaterial);
+        if (demoRefPose != null) GameObject.Destroy(demoRefPose.gameObject);
+        demoRefPose = retargetedRefPose.Clone();
+        demoRefPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        demoRefPose.transform.position = new Vector3(200, 0, 0);
+        SetLinesColor(demoRefPose, NormalLineMaterial);
+        SetPointsColor(demoRefPose, NormalPointMaterial);
+        SetPartLinesColor(demoRefPose, part, CorrectLineMaterial);
+        demoRefPose.name = "正解 motion";
         
-        var newRecPose = recordPose.Clone();
-        newRecPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
-        newRecPose.transform.position = new Vector3(200, 0, 0);
-        SetLinesColor(newRecPose, NormalLineMaterial);
-        SetPointsColor(newRecPose, NormalPointMaterial);
-        SetPartLinesColor(newRecPose, BindPart.Part.LeftLeg, ErrorLineMaterial);
-
-        
-        GameObject.Destroy(refPose.gameObject);
+        if (demoRecPose != null) GameObject.Destroy(demoRecPose.gameObject);
+        demoRecPose = recordPose.Clone();
+        demoRecPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        demoRecPose.transform.position = new Vector3(200, 0, 0);
+        SetLinesColor(demoRecPose, NormalLineMaterial);
+        SetPointsColor(demoRecPose, NormalPointMaterial);
+        SetPartLinesColor(demoRecPose, part, ErrorLineMaterial);
+        demoRefPose.name = "錯誤 motion";
     }
 }

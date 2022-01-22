@@ -49,7 +49,7 @@ namespace Pose
             
             tmpBasicObj.gameObject.SetActive(false);
             GameObject.Destroy(tmpBasicObj.gameObject);
-            //GameObject.Destroy(tmpRefObj.gameObject);
+            GameObject.Destroy(tmpRefObj.gameObject);
         }
         private static bool isLess(double num1, double num2) {
             // -1 代表無限大
