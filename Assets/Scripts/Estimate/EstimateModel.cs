@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Position index of joint points
@@ -17,6 +18,8 @@ public class EstimateModel : MonoBehaviour
     public float SkeletonY;
     public float SkeletonZ;
     public float SkeletonScale;
+
+    public DancingGameDemo DancingGameDemo;
     
     // Joint position and bone
     private VNectModel.JointPoint[] jointPoints;
@@ -25,7 +28,6 @@ public class EstimateModel : MonoBehaviour
     // Pose
     private GameObject poseGameObj;
     private Pose.Object poseObj;
-    public Pose.Object GroundTrouthObj;
 
     private void Update()
     {
@@ -200,25 +202,16 @@ public class EstimateModel : MonoBehaviour
     }
 
     public void PoseRecordEnd() {
-        if (poseObj.Status != Pose.Object.StatusType.Playing) {
+        if (poseObj.Status == Pose.Object.StatusType.Recording) {
             poseObj.Status = Pose.Object.StatusType.Playing;
             var cmuPose = Pose.VNectToCMU.Convert(poseObj);
             cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             cmuPose.Motion.ToRotationType();
             cmuPose.name = "錄製 motioin";
-            // poseObj.gameObject.SetActive(false);
-            GameObject.Destroy(poseObj);
-            var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true).GetComponent<Pose.Object>();
-            refPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            new Pose.TimeWarping(cmuPose, refPose).Do();
-            BindPart bindPart = new BindPart(cmuPose, refPose);
-            bindPart.Set(BindPart.Part.LeftLeg);
-            var retargetedRefPose = bindPart.Get();
-            retargetedRefPose.name = "標準 motion";
-            retargetedRefPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            double score = bindPart.GetGrade();
-            GameObject.Destroy(refPose);
-            Debug.Log(score);
+            DancingGameDemo.BindRefAndRealPose(cmuPose);
+            // var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true).GetComponent<Pose.Object>();
+            // var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\55b\55_10b.bvh", true).GetComponent<Pose.Object>();
+            GameObject.Destroy(poseObj.gameObject);
         }
     }
     public void PoseRecordStart() {

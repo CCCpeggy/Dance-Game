@@ -26,21 +26,32 @@ class BindPart {
 
     public Pose.Object Get() {
         Pose.Object newObj = basicObj.Clone();
-        for (int i = 0; i < 31; i++) {
-            Pose.CMUPartIdx partIdx = (Pose.CMUPartIdx) i;
-            if (needReplace(partIdx)) {
-                for (int j = 0; j < newObj.Motion.MotionData.Count; j++) {
-                    switch (newObj.Motion.MotionData[j].type)
-                    {
-                        case Pose.Motion.Frame.JointType.Position:
-                            newObj.Motion.MotionData[j].JointPosition[i] = refObj.Motion.MotionData[j].JointPosition[i];
-                            break;
-                        case Pose.Motion.Frame.JointType.Rotation:
-                            newObj.Motion.MotionData[j].JointRotation[i] = refObj.Motion.MotionData[j].JointRotation[i];
-                            break;
-                    }
+        for (int j = 0; j < newObj.Motion.MotionData.Count; j++) {
+            if (refObj.Motion.MotionData[j].type == Pose.Motion.Frame.JointType.Position) {
+                Debug.LogError("Frame 型態錯誤");
+                continue;
+            }
+            refObj.Motion.ApplyFrame(refObj.Motion.MotionData[j]);
+            newObj.Motion.ApplyFrame(newObj.Motion.MotionData[j]);
+            Vector3[] targetPos = new Vector3[refObj.Part.Length];
+            for (int i = 0; i < refObj.Part.Length; i++) {
+                targetPos[i] = new Vector3();
+                if (refObj.Part[i].Parent) {
+                    targetPos[i] = refObj.Part[i].transform.position - refObj.Part[i].Parent.transform.position;
                 }
-            } 
+            }
+            for (int i = 0; i < refObj.Part.Length; i++) {
+                if (newObj.Part[i].Parent == null) continue; 
+                int parentIdx = newObj.Part[i].Parent.PartIdx;
+                if (needReplace((Pose.CMUPartIdx) parentIdx)) {
+                    var fromPos = newObj.Part[i].Offset;
+                    var toPos = targetPos[i];
+                    newObj.Part[i].transform.localPosition = newObj.Part[i].Offset;
+                    newObj.Part[i].Parent.transform.rotation = Quaternion.FromToRotation(fromPos, toPos);
+                    newObj.Motion.MotionData[j].JointRotation[parentIdx] = newObj.Part[i].Parent.transform.localRotation;
+                }
+            }
+            newObj.Motion.MotionData[j].type = refObj.Motion.MotionData[j].type;
         }
         return newObj;
     }
@@ -55,12 +66,15 @@ class BindPart {
                 Debug.LogError("Frame 型態錯誤");
                 return -1;
             }
+            refObj.Motion.ApplyFrame(refFrame);
+            basicObj.Motion.ApplyFrame(basicFrame);
             for (int i = 0; i < 31; i++) {
                 Pose.CMUPartIdx partIdx = (Pose.CMUPartIdx) i;
                 if (needReplace(partIdx)) {
-                    var basicRotation = basicFrame.JointRotation[i];
-                    var refRotation = refFrame.JointRotation[i];
-                    diffRot += Quaternion.Angle(basicRotation, refRotation) / 180;
+                    var basicRotation = basicObj.transform.localRotation;
+                    var targetLocalPos = refObj.Part[i].transform.position - refObj.Part[i].Parent.transform.position;
+                    var refRotation = Quaternion.FromToRotation(refObj.Part[i].Offset, targetLocalPos);
+                    diffRot += (180 - Quaternion.Angle(basicRotation, refRotation)) / 180;
                     partCount++;
                 } 
             }
@@ -74,6 +88,7 @@ class BindPart {
             case Part.LeftHand:
                 switch (partIdx)
                 {
+                    case Pose.CMUPartIdx.Left_Collar:
                     case Pose.CMUPartIdx.Left_Shoulder:
                     case Pose.CMUPartIdx.Left_Forearm:
                     case Pose.CMUPartIdx.Left_Hand:
@@ -86,6 +101,7 @@ class BindPart {
             case Part.RightHand:
                 switch (partIdx)
                 {
+                    case Pose.CMUPartIdx.Right_Collar:
                     case Pose.CMUPartIdx.Right_Shoulder:
                     case Pose.CMUPartIdx.Right_Forearm:
                     case Pose.CMUPartIdx.Right_Hand:
@@ -98,6 +114,7 @@ class BindPart {
             case Part.LeftLeg:
                 switch (partIdx)
                 {
+                    case Pose.CMUPartIdx.lButtock:
                     case Pose.CMUPartIdx.Left_Thigh:
                     case Pose.CMUPartIdx.Left_Shin:
                     case Pose.CMUPartIdx.Left_Foot:
@@ -108,6 +125,7 @@ class BindPart {
             case Part.RightLeg:
                 switch (partIdx)
                 {
+                    case Pose.CMUPartIdx.rButtock:
                     case Pose.CMUPartIdx.Right_Thigh:
                     case Pose.CMUPartIdx.Right_Shin:
                     case Pose.CMUPartIdx.Right_Foot:

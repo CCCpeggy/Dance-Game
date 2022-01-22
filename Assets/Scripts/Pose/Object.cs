@@ -35,6 +35,7 @@ namespace Pose {
             for (int i = 0; i < PositionIndex.Count.Int(); i++) {
                 poseObject.Part[i] = PartObject.CreateGameObject("joint"+i, null, poseObject);
                 poseObject.Part[i].PartIdx = i;
+                poseObject.Part[i].transform.parent = poseObject.transform;
             }
             poseObject.Status = StatusType.None;
             poseObject.Motion = Motion.Create(poseObject);
