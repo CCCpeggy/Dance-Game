@@ -47,9 +47,8 @@ namespace Pose
             doTimeWarping(endFrame.Item1, endFrame.Item2);
             refToBasic();
             
-            tmpBasicObj.gameObject.SetActive(false);
-            GameObject.Destroy(tmpBasicObj.gameObject);
-            GameObject.Destroy(tmpRefObj.gameObject);
+            // GameObject.Destroy(tmpBasicObj.gameObject);
+            // GameObject.Destroy(tmpRefObj.gameObject);
         }
         private static bool isLess(double num1, double num2) {
             // -1 代表無限大
@@ -65,8 +64,8 @@ namespace Pose
             int maxLenI = -1, maxLenJ = -1;
             for (int i = 0; i < o1Count; i++)
             {
-                int jStart = Utility.Clip(i - 50, 0, o2Count - 1);
-                int jEnd = Utility.Clip(i + 50, 0, o2Count - 1);
+                int jStart = Utility.Clip(i - 100, 0, o2Count - 1);
+                int jEnd = Utility.Clip(i + 100, 0, o2Count - 1);
                 for (int j = jStart; j <= jEnd; j++)
                 {
                     var twData = Distance(tmpBasicObj, tmpRefObj, i, j);
@@ -140,6 +139,21 @@ namespace Pose
                     }
                 }
             }
+            // using (System.IO.StreamWriter outputFile = new System.IO.StreamWriter("log.csv"))
+            // {
+            //     string log="";
+            //     for (int i = 0; i < o1Count; i++) {
+            //         int jEnd = Utility.Clip(i + 50, 0, o2Count - 1);
+            //         for (int j = 0; j <= jEnd; j++) {
+            //             var twData = twTable[i, j];
+            //             if (twData != null)
+            //                 log += string.Format("{0}_{1}:{2:0},", twData.PreviousI, twData.PreviousJ, twData.Distance);
+            //             else log += ", ";
+            //         }
+            //         log += "\n";
+            //     }
+            //     outputFile.WriteLine(log);
+            // }
             return new Tuple<int, int>(maxLenI, maxLenJ);
         }
         public static Data Distance(Pose.Object o1, Pose.Object o2, int o1Idx, int o2Idx)

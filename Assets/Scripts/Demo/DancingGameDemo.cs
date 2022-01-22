@@ -14,6 +14,7 @@ public class DancingGameDemo : MonoBehaviour
     public Button DoneBtn;
     public Button LeftHandBtn, RightHandBtn, LeftLegBtn, RightLegBtn;
     public Text ScoreText;
+    public Text FirstText, SecondText, ThreeText;
     public VideoCapture VideoCapture;
     public GameObject InitPanel, LoadPanel;
     public Material NormalPointMaterial;
@@ -37,6 +38,9 @@ public class DancingGameDemo : MonoBehaviour
         RightLegBtn.gameObject.SetActive(false);
         InitPanel.SetActive(true);
         LoadPanel.SetActive(false);
+        FirstText.gameObject.SetActive(false);
+        SecondText.gameObject.SetActive(false);
+        ThreeText.gameObject.SetActive(false);
         // var refPose = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true).GetComponent<Pose.Object>();
         // refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
         // refPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
@@ -147,6 +151,9 @@ public class DancingGameDemo : MonoBehaviour
         RightHandBtn.gameObject.SetActive(true);
         LeftLegBtn.gameObject.SetActive(true);
         RightLegBtn.gameObject.SetActive(true);
+        FirstText.gameObject.SetActive(true);
+        SecondText.gameObject.SetActive(true);
+        ThreeText.gameObject.SetActive(true);
 
         recordPose = _recordPose;
         recordPose.name = "錄製 motioin";
@@ -159,12 +166,12 @@ public class DancingGameDemo : MonoBehaviour
         var refObj = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true);
         refPose = refObj.GetComponent<Pose.Object>();
         refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
+        new Pose.TimeWarping(recordPose, refPose).Do();
 
         SetAttentionPart(BindPart.Part.LeftLeg);
     }
 
     private void SetAttentionPart(BindPart.Part part) {
-        new Pose.TimeWarping(recordPose, refPose).Do();
         BindPart bindPart = new BindPart(recordPose, refPose);
         bindPart.Set(part);
         if (retargetedRefPose != null) GameObject.Destroy(retargetedRefPose.gameObject);
