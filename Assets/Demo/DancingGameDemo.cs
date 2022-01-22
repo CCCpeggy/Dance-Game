@@ -14,6 +14,7 @@ public class DancingGameDemo : MonoBehaviour
     public Button DoneBtn;
     public Text ScoreText;
     public VideoCapture VideoCapture;
+    public GameObject InitPanel, LoadPanel;
     public Material NormalPointMaterial;
     public Material NormalLineMaterial;
     // public EstimateModel EstimateModel;
@@ -23,6 +24,8 @@ public class DancingGameDemo : MonoBehaviour
         VideoBtn.onClick.AddListener(ChooseVideo);
         MotionBtn.onClick.AddListener(ChooseMotion);
         DoneBtn.onClick.AddListener(Done);
+        InitPanel.SetActive(true);
+        LoadPanel.SetActive(false);
     }
 
     IEnumerator CheckVideoPlayer()
@@ -56,7 +59,8 @@ public class DancingGameDemo : MonoBehaviour
         VideoCapture.VideoPlayer.url = "file://" + VideoPathField.text;
         VideoCapture.VideoPlayer.Prepare();
         StartCoroutine(CheckVideoPlayer());
-
+        InitPanel.SetActive(false);
+        LoadPanel.SetActive(true);
     }
 
     void CreateRefPose()
@@ -66,6 +70,11 @@ public class DancingGameDemo : MonoBehaviour
         refPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         refPose.transform.position = new Vector3(3, 1, 0);
         // EstimateModel.refPose = refPose;
+    }
+
+    public void StartVideo() {
+        VideoCapture.VideoPlayer.Play();
+        LoadPanel.SetActive(false);
     }
 
     public void SetLinesColor(Pose.Object pose, Material material)

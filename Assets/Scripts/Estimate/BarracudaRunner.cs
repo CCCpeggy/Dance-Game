@@ -172,8 +172,9 @@ public class BarracudaRunner : MonoBehaviour
             
         if (!Lock)
         {
-            if (!isStart && count > 220)
-                videoCapture.VideoPlayer.Play();
+            if (!isStart && count > 220) {
+                EstimateModel.DancingGameDemo.StartVideo();
+            }
             else count++;
             if (videoCapture.VideoPlayer.isPlaying) {
                 EstimateModel.PoseRecordStart();
