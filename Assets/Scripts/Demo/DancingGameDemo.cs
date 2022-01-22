@@ -24,8 +24,14 @@ public class DancingGameDemo : MonoBehaviour
         VideoBtn.onClick.AddListener(ChooseVideo);
         MotionBtn.onClick.AddListener(ChooseMotion);
         DoneBtn.onClick.AddListener(Done);
-        InitPanel.SetActive(true);
+        InitPanel.SetActive(false);
         LoadPanel.SetActive(false);
+        // var refPose = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true).GetComponent<Pose.Object>();
+        // refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
+        // refPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        // refPose.transform.position = new Vector3(100, 0, 0);
+        // SetLinesColor(refPose, NormalLineMaterial);
+        // SetPointsColor(refPose, NormalPointMaterial);
     }
 
     IEnumerator CheckVideoPlayer()
@@ -82,7 +88,11 @@ public class DancingGameDemo : MonoBehaviour
         for (int i = 0; i < pose.Part.Length; i++)
         {
             var line = pose.Part[i].GetComponent<LineRenderer>();
-            if (line) line.material = material;
+            if (line) {
+                line.material = material;
+                line.startWidth = 0.5f;
+                line.startWidth = 0.3f;
+            }
         }
     }
 
@@ -92,13 +102,22 @@ public class DancingGameDemo : MonoBehaviour
             pose.Part[i].GetComponent<Renderer>().material = material;
     }
 
+    public void SetRecordingObject(Pose.Object pose)
+    {
+        // pose.transform.rotation = Quaternion.Euler(0, -90, 0);
+        pose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        pose.transform.position = new Vector3(200, 0, 0);
+        SetLinesColor(pose, NormalLineMaterial);
+        SetPointsColor(pose, NormalPointMaterial);
+    }
+
     public void BindRefAndRealPose(Pose.Object cmuPose)
     {
         var refObj = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true);
         var refPose = refObj.GetComponent<Pose.Object>();
         refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
-        refPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        refPose.transform.position = new Vector3(3, 1, 0);
+        refPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        refPose.transform.position = new Vector3(100, 0, 0);
         SetLinesColor(refPose, NormalLineMaterial);
         SetPointsColor(refPose, NormalPointMaterial);
 
