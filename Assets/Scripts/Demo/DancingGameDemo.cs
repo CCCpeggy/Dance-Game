@@ -17,6 +17,8 @@ public class DancingGameDemo : MonoBehaviour
     public GameObject InitPanel, LoadPanel;
     public Material NormalPointMaterial;
     public Material NormalLineMaterial;
+    public Material ErrorLineMaterial;
+    public Material CorrectLineMaterial;
     // public EstimateModel EstimateModel;
 
     void Start()
@@ -83,6 +85,23 @@ public class DancingGameDemo : MonoBehaviour
         LoadPanel.SetActive(false);
     }
 
+    private void SetPartLinesColor(Pose.Object pose, BindPart.Part part, Material material, bool inversePart=false)
+    {
+        for (int i = 0; i < pose.Part.Length; i++)
+        {
+            if (pose.Part[i].Parent == null) continue; 
+            int parentIdx = pose.Part[i].Parent.PartIdx;
+            if (inversePart ^ BindPart.IsAttentionPart(part, (Pose.CMUPartIdx) parentIdx)) {
+                var line = pose.Part[i].GetComponent<LineRenderer>();
+                if (line) {
+                    line.material = material;
+                    line.startWidth = 0.5f;
+                    line.startWidth = 0.3f;
+                }
+            }
+        }
+    }
+
     public void SetLinesColor(Pose.Object pose, Material material)
     {
         for (int i = 0; i < pose.Part.Length; i++)
@@ -111,18 +130,22 @@ public class DancingGameDemo : MonoBehaviour
         SetPointsColor(pose, NormalPointMaterial);
     }
 
-    public void BindRefAndRealPose(Pose.Object cmuPose)
+
+    public void BindRefAndRealPose(Pose.Object recordPose)
     {
+        recordPose.name = "錄製 motioin";
+        recordPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        recordPose.transform.position = new Vector3(300, 0, 0);
+        SetLinesColor(recordPose, NormalLineMaterial);
+        SetPointsColor(recordPose, NormalPointMaterial);
+
+
         var refObj = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true);
         var refPose = refObj.GetComponent<Pose.Object>();
         refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
-        refPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
-        refPose.transform.position = new Vector3(100, 0, 0);
-        SetLinesColor(refPose, NormalLineMaterial);
-        SetPointsColor(refPose, NormalPointMaterial);
 
-        new Pose.TimeWarping(cmuPose, refPose).Do();
-        BindPart bindPart = new BindPart(cmuPose, refPose);
+        new Pose.TimeWarping(recordPose, refPose).Do();
+        BindPart bindPart = new BindPart(recordPose, refPose);
         bindPart.Set(BindPart.Part.LeftLeg);
         var retargetedRefPose = bindPart.Get();
         retargetedRefPose.name = "標準 motion";
@@ -130,6 +153,27 @@ public class DancingGameDemo : MonoBehaviour
         double score = bindPart.GetGrade();
         ScoreText.gameObject.SetActive(true);
         ScoreText.text = "分數: " + score.ToString("0") + " 分";
-        // GameObject.Destroy(refPose.gameObject);
+        // retargetedRefPose.transform.rotation = Quaternion.Euler(0, -90, 0);
+        retargetedRefPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        retargetedRefPose.transform.position = new Vector3(100, 0, 0);
+        SetLinesColor(retargetedRefPose, NormalLineMaterial);
+        SetPointsColor(retargetedRefPose, NormalPointMaterial);
+
+        var newRefPose = retargetedRefPose.Clone();
+        newRefPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        newRefPose.transform.position = new Vector3(200, 0, 0);
+        SetLinesColor(newRefPose, NormalLineMaterial);
+        SetPointsColor(newRefPose, NormalPointMaterial);
+        SetPartLinesColor(newRefPose, BindPart.Part.LeftLeg, CorrectLineMaterial);
+        
+        var newRecPose = recordPose.Clone();
+        newRecPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        newRecPose.transform.position = new Vector3(200, 0, 0);
+        SetLinesColor(newRecPose, NormalLineMaterial);
+        SetPointsColor(newRecPose, NormalPointMaterial);
+        SetPartLinesColor(newRecPose, BindPart.Part.LeftLeg, ErrorLineMaterial);
+
+        
+        GameObject.Destroy(refPose.gameObject);
     }
 }

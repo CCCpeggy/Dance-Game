@@ -82,8 +82,8 @@ class BindPart {
         return diffRot / partCount * 100;
     }
 
-    private bool needReplace(Pose.CMUPartIdx partIdx) {
-        switch (BlendPart)
+    static public bool IsAttentionPart(Part part, Pose.CMUPartIdx partIdx) {
+        switch (part)
         {
             case Part.LeftHand:
                 switch (partIdx)
@@ -135,5 +135,9 @@ class BindPart {
                 return false;
         }
         return false;
+    }
+
+    private bool needReplace(Pose.CMUPartIdx partIdx) {
+        return IsAttentionPart(BlendPart, partIdx);
     }
 }

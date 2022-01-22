@@ -45,7 +45,6 @@ public class EstimateModel : MonoBehaviour
     {
         poseGameObj = Pose.Object.CreatePoseObj();
         poseObj = poseGameObj.GetComponent<Pose.Object>();
-        DancingGameDemo.SetRecordingObject(poseObj);
         jointPoints = new VNectModel.JointPoint[PositionIndex.Count.Int()];
         for (var i = 0; i < PositionIndex.Count.Int(); i++) {
             jointPoints[i] = new VNectModel.JointPoint();
@@ -98,11 +97,13 @@ public class EstimateModel : MonoBehaviour
         poseObj.Part[PositionIndex.neck.Int()].AddChild(poseObj.Part[PositionIndex.rShldrBend.Int()]);
         poseObj.Part[PositionIndex.rShldrBend.Int()].AddChild(poseObj.Part[PositionIndex.rForearmBend.Int()]);
         poseObj.Part[PositionIndex.rForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.rHand.Int()]);
+        poseObj.Part[PositionIndex.rHand.Int()].AddChild(poseObj.Part[PositionIndex.rMid1.Int()]);
 
         // Left Arm
         poseObj.Part[PositionIndex.neck.Int()].AddChild(poseObj.Part[PositionIndex.lShldrBend.Int()]);
         poseObj.Part[PositionIndex.lShldrBend.Int()].AddChild(poseObj.Part[PositionIndex.lForearmBend.Int()]);
         poseObj.Part[PositionIndex.lForearmBend.Int()].AddChild(poseObj.Part[PositionIndex.lHand.Int()]);
+        poseObj.Part[PositionIndex.lHand.Int()].AddChild(poseObj.Part[PositionIndex.lMid1.Int()]);
 
         // Fase
 
@@ -122,6 +123,8 @@ public class EstimateModel : MonoBehaviour
         poseObj.Part[PositionIndex.hip.Int()].AddChild(poseObj.Part[PositionIndex.spine.Int()]);
         poseObj.Part[PositionIndex.spine.Int()].AddChild(poseObj.Part[PositionIndex.neck.Int()]);
         poseObj.Part[PositionIndex.neck.Int()].AddChild(poseObj.Part[PositionIndex.head.Int()]);
+
+        DancingGameDemo.SetRecordingObject(poseObj);
 
         jointPoints[PositionIndex.hip.Int()].score3D = 1f;
         jointPoints[PositionIndex.neck.Int()].score3D = 1f;
@@ -149,14 +152,14 @@ public class EstimateModel : MonoBehaviour
             }
         }
         
-        foreach (var sk in Skeletons)
-        {
-            var s = sk.start;
-            var e = sk.end;
+        // foreach (var sk in Skeletons)
+        // {
+        //     var s = sk.start;
+        //     var e = sk.end;
 
-            sk.Line.SetPosition(0, new Vector3(s.Pos3D.x * SkeletonScale + SkeletonX, s.Pos3D.y * SkeletonScale + SkeletonY, s.Pos3D.z * SkeletonScale + SkeletonZ));
-            sk.Line.SetPosition(1, new Vector3(e.Pos3D.x * SkeletonScale + SkeletonX, e.Pos3D.y * SkeletonScale + SkeletonY, e.Pos3D.z * SkeletonScale + SkeletonZ));
-        }
+        //     sk.Line.SetPosition(0, new Vector3(s.Pos3D.x * SkeletonScale + SkeletonX, s.Pos3D.y * SkeletonScale + SkeletonY, s.Pos3D.z * SkeletonScale + SkeletonZ));
+        //     sk.Line.SetPosition(1, new Vector3(e.Pos3D.x * SkeletonScale + SkeletonX, e.Pos3D.y * SkeletonScale + SkeletonY, e.Pos3D.z * SkeletonScale + SkeletonZ));
+        // }
         if (poseObj.Status == Pose.Object.StatusType.Recording)
             poseObj.Motion.Record();
     }
@@ -164,11 +167,10 @@ public class EstimateModel : MonoBehaviour
     public void PoseRecordEnd() {
         if (poseObj.Status == Pose.Object.StatusType.Recording) {
             poseObj.Status = Pose.Object.StatusType.Playing;
-            var cmuPose = Pose.VNectToCMU.Convert(poseObj);
-            cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            cmuPose.Motion.ToRotationType();
-            cmuPose.name = "錄製 motioin";
-            DancingGameDemo.BindRefAndRealPose(cmuPose);
+            var recordPose = Pose.VNectToCMU.Convert(poseObj);
+            // cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            recordPose.Motion.ToRotationType();
+            DancingGameDemo.BindRefAndRealPose(recordPose);
             // var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true).GetComponent<Pose.Object>();
             // var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\55b\55_10b.bvh", true).GetComponent<Pose.Object>();
             GameObject.Destroy(poseObj.gameObject);
