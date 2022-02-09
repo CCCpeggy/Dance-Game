@@ -80,29 +80,29 @@ namespace Pose {
                 // case CMUPartIdx.Left_Collar:
                 //     return vNectFrame.JointPosition[PositionIndex.neck.Int()];
                 case CMUPartIdx.Left_Shoulder:
-                    return vNectFrame.JointPosition[PositionIndex.lShldrBend.Int()];
+                    return vNectFrame.JointPosition[PositionIndex.rShldrBend.Int()];
                 case CMUPartIdx.Left_Forearm:
-                    return vNectFrame.JointPosition[PositionIndex.lForearmBend.Int()];
+                    return vNectFrame.JointPosition[PositionIndex.rForearmBend.Int()];
                 case CMUPartIdx.Left_Hand:
-                    return vNectFrame.JointPosition[PositionIndex.lHand.Int()];
+                    return vNectFrame.JointPosition[PositionIndex.rHand.Int()];
                 // case CMUPartIdx.LeftFingerBase:
                 //     return vNectFrame.JointPosition[PositionIndex.lHand.Int()];
                 case CMUPartIdx.LFingers:
-                    return vNectFrame.JointPosition[PositionIndex.lMid1.Int()];
+                    return vNectFrame.JointPosition[PositionIndex.rMid1.Int()];
                 // case CMUPartIdx.lThumb1:
                 //     return vNectFrame.JointPosition[PositionIndex.lHand.Int()];
                 // case CMUPartIdx.Right_Collar:
                 //     return vNectFrame.JointPosition[PositionIndex.neck.Int()];
                 case CMUPartIdx.Right_Shoulder:
-                    return vNectFrame.JointPosition[PositionIndex.rShldrBend.Int()];
+                    return vNectFrame.JointPosition[PositionIndex.lShldrBend.Int()];
                 case CMUPartIdx.Right_Forearm:
-                    return vNectFrame.JointPosition[PositionIndex.rForearmBend.Int()];
+                    return vNectFrame.JointPosition[PositionIndex.lForearmBend.Int()];
                 case CMUPartIdx.Right_Hand:
-                    return vNectFrame.JointPosition[PositionIndex.rHand.Int()];
+                    return vNectFrame.JointPosition[PositionIndex.lHand.Int()];
                 // case CMUPartIdx.RightFingerBase:
                 //     return vNectFrame.JointPosition[PositionIndex.rHand.Int()];
                 case CMUPartIdx.RFingers:
-                    return vNectFrame.JointPosition[PositionIndex.rMid1.Int()];
+                    return vNectFrame.JointPosition[PositionIndex.lMid1.Int()];
                 // case CMUPartIdx.rThumb1:
                 //     return vNectFrame.JointPosition[PositionIndex.rHand.Int()];
                 default:

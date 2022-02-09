@@ -66,6 +66,64 @@ namespace Pose
         {
             return System.Enum.GetName(typeof(CMUPartIdx), i);
         }
+
+        // 左換到右，右換到左
+        public static CMUPartIdx ChangeLeftRight(this CMUPartIdx i)
+        {
+            switch (i)
+            {
+                case CMUPartIdx.lButtock:
+                    return CMUPartIdx.rButtock;
+                case CMUPartIdx.Left_Thigh:
+                    return CMUPartIdx.Right_Thigh;
+                case CMUPartIdx.Left_Shin:
+                    return CMUPartIdx.Right_Shin;
+                case CMUPartIdx.Left_Foot:
+                    return CMUPartIdx.Right_Foot;
+                case CMUPartIdx.lToe:
+                    return CMUPartIdx.rToe;
+                case CMUPartIdx.rButtock:
+                    return CMUPartIdx.lButtock;
+                case CMUPartIdx.Right_Thigh:
+                    return CMUPartIdx.Left_Thigh;
+                case CMUPartIdx.Right_Shin:
+                    return CMUPartIdx.Left_Shin;
+                case CMUPartIdx.Right_Foot:
+                    return CMUPartIdx.Left_Foot;
+                case CMUPartIdx.rToe:
+                    return CMUPartIdx.lToe;
+                case CMUPartIdx.Left_Collar:
+                    return CMUPartIdx.Right_Collar;
+                case CMUPartIdx.Left_Shoulder:
+                    return CMUPartIdx.Right_Shoulder;
+                case CMUPartIdx.Left_Forearm:
+                    return CMUPartIdx.Right_Forearm;
+                case CMUPartIdx.Left_Hand:
+                    return CMUPartIdx.Right_Hand;
+                case CMUPartIdx.LeftFingerBase:
+                    return CMUPartIdx.RightFingerBase;
+                case CMUPartIdx.LFingers:
+                    return CMUPartIdx.RFingers;
+                case CMUPartIdx.lThumb1:
+                    return CMUPartIdx.rThumb1;
+                case CMUPartIdx.Right_Collar:
+                    return CMUPartIdx.Left_Collar;
+                case CMUPartIdx.Right_Shoulder:
+                    return CMUPartIdx.Left_Shoulder;
+                case CMUPartIdx.Right_Forearm:
+                    return CMUPartIdx.Left_Forearm;
+                case CMUPartIdx.Right_Hand:
+                    return CMUPartIdx.Left_Hand;
+                case CMUPartIdx.RightFingerBase:
+                    return CMUPartIdx.LeftFingerBase;
+                case CMUPartIdx.RFingers:
+                    return CMUPartIdx.LFingers;
+                case CMUPartIdx.rThumb1:
+                    return CMUPartIdx.lThumb1;
+                default:
+                    return i;
+            }
+        }
         public static CMUPartIdx GetParent(this CMUPartIdx i)
         {
             switch (i)
