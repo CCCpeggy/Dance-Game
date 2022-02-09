@@ -203,6 +203,6 @@ public class DancingGameDemo : MonoBehaviour
         SetLinesColor(demoRecPose, NormalLineMaterial);
         SetPointsColor(demoRecPose, NormalPointMaterial);
         SetPartLinesColor(demoRecPose, part, ErrorLineMaterial);
-        demoRefPose.name = "錯誤 motion";
+        demoRecPose.name = "錯誤 motion";
     }
 }

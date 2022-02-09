@@ -72,7 +72,7 @@ namespace Pose
                     if (maxLenI >= 0) {
                         var maxLenTwData = twTable[maxLenI, maxLenJ];
                         double maxLenAvgDis = maxLenTwData.SumDistance / maxLenTwData.Length;
-                        if (!isLess(twData.Distance, maxLenAvgDis * 2)) continue;
+                        if (!isLess(twData.Distance, maxLenAvgDis * 2.5)) continue;
                     }
                     twTable[i, j] = twData;
                     Data left = j > 0 ? twTable[i, j - 1] : null;
@@ -241,11 +241,11 @@ namespace Pose
                 if (Warping[i] >= 0 && Warping[i] <= tmpRefObj.Motion.FrameCount - 1) {
                     lastFrameIdx = i;
                     if (startFrameIdx < 0) startFrameIdx = i;
-                    else refObj.Motion.MotionData.Add(tmpRefObj.Motion.getFrame(Warping[i]));
+                    refObj.Motion.MotionData.Add(tmpRefObj.Motion.getFrame(Warping[i]));
                 }
             }
-            basicObj.Motion.MotionData = basicObj.Motion.MotionData.GetRange(startFrameIdx, lastFrameIdx - startFrameIdx);
-            basicObj.Motion.FrameCount = refObj.Motion.FrameCount = lastFrameIdx - startFrameIdx;
+            basicObj.Motion.MotionData = basicObj.Motion.MotionData.GetRange(startFrameIdx, lastFrameIdx - startFrameIdx + 1);
+            basicObj.Motion.FrameCount = refObj.Motion.FrameCount = lastFrameIdx - startFrameIdx + 1;
             refObj.Motion.FrameTime = basicObj.Motion.FrameTime;
         }
     }

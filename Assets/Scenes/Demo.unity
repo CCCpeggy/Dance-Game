@@ -3757,6 +3757,9 @@ MonoBehaviour:
   LeftLegBtn: {fileID: 711875461}
   RightLegBtn: {fileID: 412984348}
   ScoreText: {fileID: 1760039826}
+  FirstText: {fileID: 578047226}
+  SecondText: {fileID: 1020623061}
+  ThreeText: {fileID: 1057700426}
   VideoCapture: {fileID: 2057071399}
   InitPanel: {fileID: 1414686392}
   LoadPanel: {fileID: 218997809}

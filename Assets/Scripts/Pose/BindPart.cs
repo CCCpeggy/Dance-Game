@@ -46,7 +46,7 @@ class BindPart {
                 if (needReplace((Pose.CMUPartIdx) parentIdx)) {
                     var fromPos = newObj.Part[i].Offset;
                     var toPos = targetPos[i];
-                    newObj.Part[i].transform.localPosition = newObj.Part[i].Offset;
+                    // newObj.Part[i].transform.localPosition = newObj.Part[i].Offset;
                     newObj.Part[i].Parent.transform.rotation = Quaternion.FromToRotation(fromPos, toPos);
                     newObj.Motion.MotionData[j].JointRotation[parentIdx] = newObj.Part[i].Parent.transform.localRotation;
                 }
@@ -88,7 +88,7 @@ class BindPart {
             case Part.LeftHand:
                 switch (partIdx)
                 {
-                    case Pose.CMUPartIdx.Left_Collar:
+                    // case Pose.CMUPartIdx.Left_Collar:
                     case Pose.CMUPartIdx.Left_Shoulder:
                     case Pose.CMUPartIdx.Left_Forearm:
                     case Pose.CMUPartIdx.Left_Hand:
@@ -101,7 +101,7 @@ class BindPart {
             case Part.RightHand:
                 switch (partIdx)
                 {
-                    case Pose.CMUPartIdx.Right_Collar:
+                    // case Pose.CMUPartIdx.Right_Collar:
                     case Pose.CMUPartIdx.Right_Shoulder:
                     case Pose.CMUPartIdx.Right_Forearm:
                     case Pose.CMUPartIdx.Right_Hand:
