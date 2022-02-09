@@ -8,6 +8,7 @@ namespace Pose {
     class VNectToCMU {
 
         public static Object Convert(Object vNectObj) {
+            // 宣告新的 Pose Object
             GameObject cmuObj = new GameObject();
             var cmuPose = cmuObj.AddComponent<Object>();
             cmuPose.Status = vNectObj.Status;
@@ -27,6 +28,7 @@ namespace Pose {
             cmuMotion.FrameCount = vNectObj.Motion.FrameCount;
             cmuMotion.FrameTime = vNectObj.Motion.FrameTime;
 
+            // 計算每個 frame 的每個關節的位置
             for(int i = 0; i < vNectMotion.MotionData.Count; i++) {
                 Motion.Frame cmuFrame = new Motion.Frame(31, Motion.Frame.JointType.Position);
                 Motion.Frame vNectFrame = vNectMotion.MotionData[i];

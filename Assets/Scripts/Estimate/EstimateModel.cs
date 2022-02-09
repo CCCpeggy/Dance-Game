@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+From: Digital- Standard Co., Ltd.
+Source: https://github.com/digital-standard/ThreeDPoseUnityBarracuda
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -167,12 +172,15 @@ public class EstimateModel : MonoBehaviour
     public void PoseRecordEnd() {
         if (poseObj.Status == Pose.Object.StatusType.Recording) {
             poseObj.Status = Pose.Object.StatusType.Playing;
+
+            // 將錄製下來的骨架格式轉成跟 CMU 資料集的格式相同 (關節對應是寫死的)
             var recordPose = Pose.VNectToCMU.Convert(poseObj);
-            // cmuPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            
+            // 由於錄製下來的骨架是以關節位置做儲存，為了後續的處理，所以要轉成旋轉角度儲存
             recordPose.Motion.ToRotationType();
+
+            // 後續處理
             DancingGameDemo.BindRefAndRealPose(recordPose);
-            // var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\08-09\09_03b.bvh", true).GetComponent<Pose.Object>();
-            // var refPose = Pose.Object.CreatePoseObjByBVH(@"D:\workplace\3D遊戲\P2\motion cmu data\55b\55_10b.bvh", true).GetComponent<Pose.Object>();
             GameObject.Destroy(poseObj.gameObject);
         }
     }

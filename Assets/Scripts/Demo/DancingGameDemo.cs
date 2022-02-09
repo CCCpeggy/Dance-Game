@@ -147,6 +147,7 @@ public class DancingGameDemo : MonoBehaviour
 
     public void BindRefAndRealPose(Pose.Object _recordPose)
     {
+        // 顯示切換部位的按鈕
         LeftHandBtn.gameObject.SetActive(true);
         RightHandBtn.gameObject.SetActive(true);
         LeftLegBtn.gameObject.SetActive(true);
@@ -155,6 +156,7 @@ public class DancingGameDemo : MonoBehaviour
         SecondText.gameObject.SetActive(true);
         ThreeText.gameObject.SetActive(true);
 
+        // 設定錄製的骨架位置與材質
         recordPose = _recordPose;
         recordPose.name = "錄製 motioin";
         recordPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
@@ -162,7 +164,7 @@ public class DancingGameDemo : MonoBehaviour
         SetLinesColor(recordPose, NormalLineMaterial);
         SetPointsColor(recordPose, NormalPointMaterial);
 
-
+        // 找兩個骨架相近的一段
         var refObj = Pose.Object.CreatePoseObjByBVH(MotionPathField.text, true);
         refPose = refObj.GetComponent<Pose.Object>();
         refPose.transform.rotation = Quaternion.Euler(0, -90, 0);
@@ -171,17 +173,18 @@ public class DancingGameDemo : MonoBehaviour
         SetAttentionPart(BindPart.Part.LeftLeg);
     }
 
+    // 設定關注的部位
     private void SetAttentionPart(BindPart.Part part) {
         BindPart bindPart = new BindPart(recordPose, refPose);
         bindPart.Set(part);
         if (retargetedRefPose != null) GameObject.Destroy(retargetedRefPose.gameObject);
-        retargetedRefPose = bindPart.Get();
+        // 取得關注的部位結合後的結果與分數
+        retargetedRefPose = bindPart.Get(); // 結合
         retargetedRefPose.name = "標準 motion";
         retargetedRefPose.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        double score = bindPart.GetGrade();
+        double score = bindPart.GetGrade(); // 分數
         ScoreText.gameObject.SetActive(true);
         ScoreText.text = "分數: " + score.ToString("0") + " 分";
-        // retargetedRefPose.transform.rotation = Quaternion.Euler(0, -90, 0);
         retargetedRefPose.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
         retargetedRefPose.transform.position = new Vector3(100, 0, 0);
         SetLinesColor(retargetedRefPose, NormalLineMaterial);

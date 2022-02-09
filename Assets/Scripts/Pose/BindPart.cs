@@ -24,6 +24,7 @@ class BindPart {
         BlendPart = blendPart;
     }
 
+    // 關注的部位的角度由 reference Object (基本上是錄製的骨架) 做取代
     public Pose.Object Get() {
         Pose.Object newObj = basicObj.Clone();
         for (int j = 0; j < newObj.Motion.MotionData.Count; j++) {
@@ -46,7 +47,6 @@ class BindPart {
                 if (needReplace((Pose.CMUPartIdx) parentIdx)) {
                     var fromPos = newObj.Part[i].Offset;
                     var toPos = targetPos[i];
-                    // newObj.Part[i].transform.localPosition = newObj.Part[i].Offset;
                     newObj.Part[i].Parent.transform.rotation = Quaternion.FromToRotation(fromPos, toPos);
                     newObj.Motion.MotionData[j].JointRotation[parentIdx] = newObj.Part[i].Parent.transform.localRotation;
                 }
@@ -74,6 +74,7 @@ class BindPart {
                     var basicRotation = basicObj.transform.localRotation;
                     var targetLocalPos = refObj.Part[i].transform.position - refObj.Part[i].Parent.transform.position;
                     var refRotation = Quaternion.FromToRotation(refObj.Part[i].Offset, targetLocalPos);
+                    // 0 -> 角度一致，100 -> 差了 180 度
                     diffRot += (180 - Quaternion.Angle(basicRotation, refRotation)) / 180;
                     partCount++;
                 } 

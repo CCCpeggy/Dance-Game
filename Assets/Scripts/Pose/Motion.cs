@@ -90,19 +90,23 @@ namespace Pose {
             return poseMotion;
         }
         public void ToRotationType() {
-            // PoseObj.Status = Object.StatusType.None;
+            // 將其中一個 frame 的關節相對位置作為 Offset
             ApplyFrame(MotionData[PoseObj.Motion.FrameCount / 2]);
             for (int i = 1; i < PoseObj.Part.Length; i++) {
                 PoseObj.Part[i].Offset = PoseObj.Part[i].transform.localPosition;
             }
+            // 計算每個關節從對於 Root 的位置到新位置需要的角度
+            // 因為祖先的角度會影響到新位置需要的角度，所以必須依 BFS 做設定
             foreach(var frame in MotionData) {
                 if (frame.type != Frame.JointType.Position) continue;
                 ApplyFrame(frame);
                 frame.JointRotation = new Quaternion[frame.JointPosition.Length];
                 Vector3[] targetPos = new Vector3[frame.JointPosition.Length];
+                // 存目標位置
                 for (int i = 0; i < frame.JointPosition.Length; i++) {
                     targetPos[i] = PoseObj.Part[i].transform.localPosition;
                 }
+                // 計算需要的角度，並給 Parent
                 for (int i = 0; i < PoseObj.Part.Length; i++) {
                     frame.JointRotation[i] = Quaternion.Euler(0, 0, 0);
                     if (PoseObj.Part[i].Parent) {
