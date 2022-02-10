@@ -79,21 +79,3 @@
 ### 開啟
 
 * 使用 Unity 開啟專案（開發使用版本為 `2020.3.20f1`）
-
-<style>
-.info blockquote
-{
-  color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-.warning p
-{
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-  padding: 15px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-</style>
