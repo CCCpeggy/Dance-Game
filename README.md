@@ -25,6 +25,7 @@
   ![播放影片與骨架](./document_data/record.gif)
 
 * 產生出結果
+
   ![結果](./document_data/result.gif)
 
 * 切換關注的部位
